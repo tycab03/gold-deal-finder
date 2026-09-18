@@ -83,6 +83,85 @@ def extract_weight(title):
 
 
 # ============================================================
+# REJECT NON-SOLID GOLD
+# ============================================================
+
+def is_solid_gold_candidate(title):
+    """
+    Reject products that explicitly indicate plating,
+    filling, bonding, vermeil, overlay, etc.
+
+    This does NOT prove that an accepted item is solid gold.
+    It only removes obvious non-solid-gold listings.
+    """
+
+    title_lower = title.lower()
+
+    excluded_phrases = [
+        "gold plated",
+        "gold plate",
+        "gold-plated",
+        "gold-plate",
+
+        "gold filled",
+        "gold fill",
+        "gold-filled",
+        "gold-fill",
+
+        "gold bonded",
+        "gold-bonded",
+
+        "gold tone",
+        "gold-tone",
+        "gold toned",
+        "gold-toned",
+
+        "gold coloured",
+        "gold-coloured",
+        "gold colored",
+        "gold-colored",
+
+        "gold vermeil",
+        "vermeil",
+
+        "electroplated",
+        "electro plated",
+        "electro-plated",
+
+        "gold overlay",
+        "gold-overlay",
+
+        "rolled gold",
+        "rolled-gold",
+    ]
+
+    # Check full phrases
+    for phrase in excluded_phrases:
+        if phrase in title_lower:
+            return False
+
+    # Common jewellery abbreviations
+    excluded_patterns = [
+        r"\bGP\b",       # Gold Plated
+        r"\bGEP\b",      # Gold Electroplated
+        r"\bHGE\b",      # Heavy Gold Electroplate
+        r"\bHGP\b",      # Heavy Gold Plate
+        r"\bRGP\b",      # Rolled Gold Plate
+        r"\bGF\b",       # Gold Filled
+    ]
+
+    for pattern in excluded_patterns:
+        if re.search(
+            pattern,
+            title,
+            re.IGNORECASE,
+        ):
+            return False
+
+    return True
+
+
+# ============================================================
 # CASHIES SEARCH API
 # ============================================================
 
@@ -130,7 +209,7 @@ def search_cashies(
 
 
 # ============================================================
-# CONVERT API PRODUCT INTO GOLD CANDIDATE
+# CREATE GOLD CANDIDATE
 # ============================================================
 
 def create_candidate(product):
@@ -144,6 +223,17 @@ def create_candidate(product):
         "",
     )
 
+    # --------------------------------------------------------
+    # REJECT PLATED / FILLED / BONDED / VERMEIL
+    # --------------------------------------------------------
+
+    if not is_solid_gold_candidate(title):
+        return None
+
+    # --------------------------------------------------------
+    # EXTRACT GOLD INFORMATION
+    # --------------------------------------------------------
+
     carat = extract_carat(title)
     weight = extract_weight(title)
 
@@ -151,6 +241,10 @@ def create_candidate(product):
         return None
 
     if weight is None:
+        return None
+
+    # Basic sanity check
+    if weight <= 0:
         return None
 
     # --------------------------------------------------------
@@ -164,6 +258,9 @@ def create_candidate(product):
         )
 
     except (TypeError, ValueError):
+        return None
+
+    if price <= 0:
         return None
 
     # --------------------------------------------------------
@@ -187,6 +284,10 @@ def create_candidate(product):
 
     if url and url.startswith("/"):
         url = BASE_URL + url
+
+    # --------------------------------------------------------
+    # RETURN CANDIDATE
+    # --------------------------------------------------------
 
     return {
         "code": code,
@@ -215,6 +316,9 @@ def find_gold_candidates(
 ):
     candidates = []
     seen_codes = set()
+
+    rejected_non_solid = 0
+    rejected_missing_gold_data = 0
 
     session = requests.Session()
     session.headers.update(HEADERS)
@@ -290,17 +394,11 @@ def find_gold_candidates(
             time.sleep(2)
             continue
 
-        # Stop if Cashies stops returning products
         if not products:
             print(
                 f"[{page:,}/{total_pages:,}] "
-                "No products returned."
+                "No products returned - stopping."
             )
-
-            print(
-                "Stopping scan."
-            )
-
             break
 
         new_products = 0
@@ -312,18 +410,39 @@ def find_gold_candidates(
             if not code:
                 continue
 
-            # Duplicate protection
+            # ------------------------------------------------
+            # DUPLICATE PROTECTION
+            # ------------------------------------------------
+
             if code in seen_codes:
                 continue
 
             seen_codes.add(code)
             new_products += 1
 
+            title = product.get(
+                "Title",
+                "",
+            )
+
+            # ------------------------------------------------
+            # COUNT OBVIOUS NON-SOLID GOLD
+            # ------------------------------------------------
+
+            if not is_solid_gold_candidate(title):
+                rejected_non_solid += 1
+                continue
+
+            # ------------------------------------------------
+            # CREATE CANDIDATE
+            # ------------------------------------------------
+
             candidate = create_candidate(
                 product
             )
 
             if candidate is None:
+                rejected_missing_gold_data += 1
                 continue
 
             candidates.append(candidate)
@@ -334,22 +453,38 @@ def find_gold_candidates(
             f"{len(products)} returned | "
             f"{new_products} new | "
             f"+{new_candidates} usable | "
-            f"{len(candidates):,} total usable"
+            f"{len(candidates):,} total"
         )
 
         # Don't hammer the API
         time.sleep(REQUEST_DELAY)
 
+    # --------------------------------------------------------
+    # SCAN SUMMARY
+    # --------------------------------------------------------
+
     print()
+    print("=" * 70)
+    print("                     SCAN SUMMARY")
     print("=" * 70)
 
     print(
-        f"Unique catalogue products scanned: "
+        f"Unique products scanned:        "
         f"{len(seen_codes):,}"
     )
 
     print(
-        f"Products with usable carat + weight: "
+        f"Rejected plated/filled/etc:     "
+        f"{rejected_non_solid:,}"
+    )
+
+    print(
+        f"Rejected missing carat/weight:  "
+        f"{rejected_missing_gold_data:,}"
+    )
+
+    print(
+        f"Usable gold candidates:         "
         f"{len(candidates):,}"
     )
 
@@ -359,7 +494,7 @@ def find_gold_candidates(
 
 
 # ============================================================
-# CALCULATE GOLD VALUES
+# ANALYSE GOLD VALUE
 # ============================================================
 
 def analyse_products(
@@ -379,7 +514,16 @@ def analyse_products(
         ]
 
         # ----------------------------------------------------
-        # GOLD VALUE PER GRAM
+        # PURE GOLD EQUIVALENT
+        # ----------------------------------------------------
+
+        pure_gold_equivalent = (
+            weight
+            * purity
+        )
+
+        # ----------------------------------------------------
+        # GOLD VALUE PER GRAM OF THIS CARAT
         # ----------------------------------------------------
 
         gold_value_per_gram = (
@@ -400,7 +544,7 @@ def analyse_products(
             continue
 
         # ----------------------------------------------------
-        # TOTAL PURCHASE COST
+        # TOTAL ACQUISITION COST
         # ----------------------------------------------------
 
         total_price = (
@@ -418,7 +562,7 @@ def analyse_products(
         )
 
         # ----------------------------------------------------
-        # PRICE VS THEORETICAL GOLD VALUE
+        # PRICE VS GOLD %
         # ----------------------------------------------------
 
         price_vs_gold_pct = (
@@ -430,16 +574,7 @@ def analyse_products(
         ) * 100
 
         # ----------------------------------------------------
-        # PURE GOLD EQUIVALENT
-        # ----------------------------------------------------
-
-        pure_gold_equivalent = (
-            weight
-            * purity
-        )
-
-        # ----------------------------------------------------
-        # STORE RESULTS
+        # SAVE CALCULATIONS
         # ----------------------------------------------------
 
         product["purity"] = purity
@@ -522,6 +657,11 @@ def display_results(
         f"${gold_price * 0.750:.2f}/g"
     )
 
+    print(
+        f"22ct Gold Value:       "
+        f"${gold_price * 0.916:.2f}/g"
+    )
+
     print()
 
     print(
@@ -535,7 +675,7 @@ def display_results(
     )
 
     # --------------------------------------------------------
-    # TOP DEALS
+    # TOP RESULTS
     # --------------------------------------------------------
 
     for rank, product in enumerate(
@@ -585,8 +725,8 @@ def display_results(
         )
 
         print(
-            f"Pure Gold Equivalent:"
-            f" {product['pure_gold_equivalent']:.2f}g"
+            f"Pure Gold Equivalent: "
+            f"{product['pure_gold_equivalent']:.2f}g"
         )
 
         print()
@@ -638,8 +778,7 @@ def display_results(
 if __name__ == "__main__":
     try:
         # ----------------------------------------------------
-        # STEP 1
-        # SCAN THE FULL CASHIES SEARCH
+        # STEP 1 - SCAN FULL CATALOGUE SEARCH
         # ----------------------------------------------------
 
         products = find_gold_candidates(
@@ -649,15 +788,14 @@ if __name__ == "__main__":
 
         if not products:
             print(
-                "\nNo usable gold "
-                "products were found."
+                "\nNo usable gold products "
+                "were found."
             )
 
             raise SystemExit
 
         # ----------------------------------------------------
-        # STEP 2
-        # GET LIVE GOLD PRICE
+        # STEP 2 - GET LIVE GOLD PRICE
         # ----------------------------------------------------
 
         print()
@@ -675,8 +813,7 @@ if __name__ == "__main__":
         )
 
         # ----------------------------------------------------
-        # STEP 3
-        # CALCULATE VALUES
+        # STEP 3 - ANALYSE PRODUCTS
         # ----------------------------------------------------
 
         print()
@@ -693,8 +830,7 @@ if __name__ == "__main__":
         )
 
         # ----------------------------------------------------
-        # STEP 4
-        # DISPLAY TOP 20
+        # STEP 4 - DISPLAY BEST 20
         # ----------------------------------------------------
 
         display_results(
