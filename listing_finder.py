@@ -2,6 +2,7 @@ import re
 import time
 import requests
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from gold_price import get_gold_price_per_gram
 
 
@@ -13,7 +14,8 @@ BASE_URL = "https://www.cashconverters.com.au"
 SEARCH_ENDPOINT = BASE_URL + "/c3api/search/results"
 
 RESULTS_PER_PAGE = 24
-REQUEST_DELAY = 0.5
+MAX_WORKERS = 5
+MAX_RETRIES = 4
 
 HEADERS = {
     "User-Agent": (
@@ -40,13 +42,6 @@ SUPPORTED_CARATS = {
 # ============================================================
 
 def extract_carat(title):
-    """
-    Examples:
-        9ct Yellow Gold Chain
-        18CT Gold Ring
-        14ct White Gold Pendant
-    """
-
     match = re.search(
         r"\b(9|14|18|22|24)\s*ct\b",
         title,
@@ -66,9 +61,9 @@ def extract_carat(title):
 def extract_weight(title):
     """
     Examples:
-        Gold Bangle - 8.99G
-        Gold Pendant 2.3G
-        Gold Chain 12G
+
+    9ct Yellow Gold Chain 12.5G
+    18ct Yellow Gold Bangle - 8.4G
     """
 
     matches = re.findall(
@@ -83,71 +78,194 @@ def extract_weight(title):
 
 
 # ============================================================
-# REJECT NON-SOLID GOLD
+# CONSERVATIVE GOLD FILTER
 # ============================================================
 
 def is_solid_gold_candidate(title):
     """
-    Reject products that explicitly indicate plating,
-    filling, bonding, vermeil, overlay, etc.
+    Reject listings where the stated gross weight cannot
+    reasonably be treated as the weight of the gold item.
 
-    This does NOT prove that an accepted item is solid gold.
-    It only removes obvious non-solid-gold listings.
+    This removes obvious:
+        - plated jewellery
+        - filled jewellery
+        - bonded jewellery
+        - vermeil
+        - rolled gold
+        - mixed/base metals
+        - pearls
+        - stones/gems
+        - opals
+        - cameos
+
+    Passing this filter does NOT prove the entire stated
+    weight is gold. Promising results should still be
+    verified from the individual product page.
     """
 
     title_lower = title.lower()
 
     excluded_phrases = [
+
+        # ----------------------------------------------------
+        # PLATED
+        # ----------------------------------------------------
+
         "gold plated",
         "gold plate",
         "gold-plated",
         "gold-plate",
 
+        "electroplated",
+        "electro plated",
+        "electro-plated",
+
+        # ----------------------------------------------------
+        # FILLED
+        # ----------------------------------------------------
+
         "gold filled",
         "gold fill",
         "gold-filled",
         "gold-fill",
+        "goldfilled",
+
+        "silver filled",
+        "silver-filled",
+        "silverfilled",
+
+        "copper filled",
+        "copper-filled",
+        "copperfilled",
+
+        # ----------------------------------------------------
+        # BONDED / OVERLAY
+        # ----------------------------------------------------
 
         "gold bonded",
         "gold-bonded",
-
-        "gold tone",
-        "gold-tone",
-        "gold toned",
-        "gold-toned",
-
-        "gold coloured",
-        "gold-coloured",
-        "gold colored",
-        "gold-colored",
-
-        "gold vermeil",
-        "vermeil",
-
-        "electroplated",
-        "electro plated",
-        "electro-plated",
 
         "gold overlay",
         "gold-overlay",
 
         "rolled gold",
         "rolled-gold",
+
+        # ----------------------------------------------------
+        # VERMEIL
+        # ----------------------------------------------------
+
+        "gold vermeil",
+        "vermeil",
+
+        # ----------------------------------------------------
+        # GOLD COLOURED
+        # ----------------------------------------------------
+
+        "gold tone",
+        "gold-tone",
+
+        "gold toned",
+        "gold-toned",
+
+        "gold coloured",
+        "gold-coloured",
+
+        "gold colored",
+        "gold-colored",
+
+        # ----------------------------------------------------
+        # BASE / MIXED METALS
+        # ----------------------------------------------------
+
+        "copper",
+        "sterling silver",
+        "silver and gold",
+        "silver & gold",
+
+        # ----------------------------------------------------
+        # PEARLS
+        # ----------------------------------------------------
+
+        "pearl",
+        "pearls",
+
+        # ----------------------------------------------------
+        # DIAMONDS
+        # ----------------------------------------------------
+
+        "diamond",
+        "diamonds",
+
+        # ----------------------------------------------------
+        # GEMSTONES
+        # ----------------------------------------------------
+
+        "sapphire",
+        "sapphires",
+
+        "ruby",
+        "rubies",
+
+        "emerald",
+        "emeralds",
+
+        "topaz",
+
+        "amethyst",
+
+        "garnet",
+
+        "agate",
+
+        "quartz",
+
+        "turquoise",
+
+        # ----------------------------------------------------
+        # CUBIC ZIRCONIA / ZIRCON
+        # ----------------------------------------------------
+
+        "cubic zirconia",
+        "zirconia",
+        "zircon",
+
+        # ----------------------------------------------------
+        # OPALS
+        # ----------------------------------------------------
+
+        "opal",
+        "opals",
+        "andamooka",
+
+        # ----------------------------------------------------
+        # CAMEOS
+        # ----------------------------------------------------
+
+        "cameo",
+        "cameos",
     ]
 
-    # Check full phrases
+    # --------------------------------------------------------
+    # PHRASE CHECK
+    # --------------------------------------------------------
+
     for phrase in excluded_phrases:
         if phrase in title_lower:
             return False
 
-    # Common jewellery abbreviations
+    # --------------------------------------------------------
+    # ABBREVIATIONS
+    # --------------------------------------------------------
+
     excluded_patterns = [
-        r"\bGP\b",       # Gold Plated
-        r"\bGEP\b",      # Gold Electroplated
-        r"\bHGE\b",      # Heavy Gold Electroplate
-        r"\bHGP\b",      # Heavy Gold Plate
-        r"\bRGP\b",      # Rolled Gold Plate
-        r"\bGF\b",       # Gold Filled
+        r"\bGP\b",
+        r"\bGEP\b",
+        r"\bHGE\b",
+        r"\bHGP\b",
+        r"\bRGP\b",
+        r"\bGF\b",
+        r"\bCZ\b",
     ]
 
     for pattern in excluded_patterns:
@@ -162,13 +280,12 @@ def is_solid_gold_candidate(title):
 
 
 # ============================================================
-# CASHIES SEARCH API
+# FETCH ONE CASHIES PAGE
 # ============================================================
 
-def search_cashies(
-    session,
-    query,
+def fetch_page(
     page,
+    query,
     number_of_results=RESULTS_PER_PAGE,
 ):
     params = {
@@ -177,39 +294,90 @@ def search_cashies(
         "NumberOfResults": number_of_results,
     }
 
-    response = session.get(
-        SEARCH_ENDPOINT,
-        params=params,
-        timeout=20,
+    for attempt in range(
+        1,
+        MAX_RETRIES + 1,
+    ):
+        try:
+            response = requests.get(
+                SEARCH_ENDPOINT,
+                headers=HEADERS,
+                params=params,
+                timeout=20,
+            )
+
+            # ------------------------------------------------
+            # RATE LIMIT
+            # ------------------------------------------------
+
+            if response.status_code == 429:
+                wait_time = attempt * 3
+
+                print(
+                    f"\nPage {page} rate limited. "
+                    f"Waiting {wait_time}s..."
+                )
+
+                time.sleep(wait_time)
+                continue
+
+            # ------------------------------------------------
+            # SERVER ERROR
+            # ------------------------------------------------
+
+            if response.status_code >= 500:
+                wait_time = attempt * 2
+
+                print(
+                    f"\nPage {page} server error "
+                    f"{response.status_code}. "
+                    f"Retrying in {wait_time}s..."
+                )
+
+                time.sleep(wait_time)
+                continue
+
+            response.raise_for_status()
+
+            data = response.json()
+
+            if not data.get("WasSuccessful"):
+                raise RuntimeError(
+                    str(data.get("Message"))
+                )
+
+            product_list = (
+                data["Value"]["ProductList"]
+            )
+
+            products = product_list.get(
+                "ProductListItems",
+                [],
+            )
+
+            total = product_list.get(
+                "ProductListItemCount",
+                0,
+            )
+
+            return page, products, total
+
+        except requests.RequestException as error:
+
+            if attempt == MAX_RETRIES:
+                raise error
+
+            wait_time = attempt * 2
+
+            time.sleep(wait_time)
+
+    raise RuntimeError(
+        f"Page {page} failed after retries."
     )
-
-    response.raise_for_status()
-
-    data = response.json()
-
-    if not data.get("WasSuccessful"):
-        raise RuntimeError(
-            "Cashies search failed: "
-            + str(data.get("Message"))
-        )
-
-    product_list = data["Value"]["ProductList"]
-
-    products = product_list.get(
-        "ProductListItems",
-        [],
-    )
-
-    total = product_list.get(
-        "ProductListItemCount",
-        0,
-    )
-
-    return products, total
 
 
 # ============================================================
-# CREATE GOLD CANDIDATE
+# CREATE CANDIDATE
 # ============================================================
 
 def create_candidate(product):
@@ -224,14 +392,14 @@ def create_candidate(product):
     )
 
     # --------------------------------------------------------
-    # REJECT PLATED / FILLED / BONDED / VERMEIL
+    # REJECT NON-SOLID / MIXED / STONE ITEMS
     # --------------------------------------------------------
 
     if not is_solid_gold_candidate(title):
         return None
 
     # --------------------------------------------------------
-    # EXTRACT GOLD INFORMATION
+    # CARAT + WEIGHT
     # --------------------------------------------------------
 
     carat = extract_carat(title)
@@ -243,7 +411,6 @@ def create_candidate(product):
     if weight is None:
         return None
 
-    # Basic sanity check
     if weight <= 0:
         return None
 
@@ -285,10 +452,6 @@ def create_candidate(product):
     if url and url.startswith("/"):
         url = BASE_URL + url
 
-    # --------------------------------------------------------
-    # RETURN CANDIDATE
-    # --------------------------------------------------------
-
     return {
         "code": code,
         "title": title,
@@ -307,7 +470,77 @@ def create_candidate(product):
 
 
 # ============================================================
-# SCAN FULL CASHIES RESULT SET
+# PROCESS PRODUCTS
+# ============================================================
+
+def process_products(
+    products,
+    seen_codes,
+):
+    candidates = []
+
+    new_products = 0
+    rejected_non_solid = 0
+    rejected_other = 0
+
+    for product in products:
+        code = product.get("Code")
+
+        if not code:
+            continue
+
+        # ----------------------------------------------------
+        # DUPLICATES
+        # ----------------------------------------------------
+
+        if code in seen_codes:
+            continue
+
+        seen_codes.add(code)
+
+        new_products += 1
+
+        title = product.get(
+            "Title",
+            "",
+        )
+
+        # ----------------------------------------------------
+        # CONSERVATIVE GOLD FILTER
+        # ----------------------------------------------------
+
+        if not is_solid_gold_candidate(
+            title
+        ):
+            rejected_non_solid += 1
+            continue
+
+        # ----------------------------------------------------
+        # CREATE CANDIDATE
+        # ----------------------------------------------------
+
+        candidate = create_candidate(
+            product
+        )
+
+        if candidate is None:
+            rejected_other += 1
+            continue
+
+        candidates.append(
+            candidate
+        )
+
+    return (
+        candidates,
+        new_products,
+        rejected_non_solid,
+        rejected_other,
+    )
+
+
+# ============================================================
+# FAST FULL CATALOGUE SCAN
 # ============================================================
 
 def find_gold_candidates(
@@ -315,39 +548,56 @@ def find_gold_candidates(
     results_per_page=RESULTS_PER_PAGE,
 ):
     candidates = []
+
     seen_codes = set()
 
     rejected_non_solid = 0
-    rejected_missing_gold_data = 0
-
-    session = requests.Session()
-    session.headers.update(HEADERS)
+    rejected_other = 0
 
     print()
-    print("=" * 70)
-    print("              CASHIES FULL GOLD SCANNER")
-    print("=" * 70)
+    print("=" * 72)
+    print("                CASHIES FAST GOLD SCANNER")
+    print("=" * 72)
 
     print()
-    print(f"Search: {query}")
-    print("Checking catalogue size...")
+
+    print(
+        f"Search: {query}"
+    )
+
+    print(
+        f"Concurrent workers: "
+        f"{MAX_WORKERS}"
+    )
+
+    print()
+
+    print(
+        "Checking catalogue size..."
+    )
 
     # --------------------------------------------------------
-    # FIRST REQUEST
+    # PAGE 1
     # --------------------------------------------------------
 
-    first_products, total = search_cashies(
-        session=session,
-        query=query,
+    (
+        _,
+        first_products,
+        total,
+    ) = fetch_page(
         page=1,
+        query=query,
         number_of_results=results_per_page,
     )
 
     total_pages = (
-        total + results_per_page - 1
+        total
+        + results_per_page
+        - 1
     ) // results_per_page
 
     print()
+
     print(
         f"Catalogue results: "
         f"{total:,}"
@@ -366,107 +616,145 @@ def find_gold_candidates(
     print()
 
     # --------------------------------------------------------
-    # SCAN EVERY PAGE
+    # PROCESS PAGE 1
     # --------------------------------------------------------
 
-    for page in range(
-        1,
-        total_pages + 1,
-    ):
-        try:
-            if page == 1:
-                products = first_products
+    (
+        page_candidates,
+        new_products,
+        page_rejected_non_solid,
+        page_rejected_other,
+    ) = process_products(
+        first_products,
+        seen_codes,
+    )
 
-            else:
-                products, _ = search_cashies(
-                    session=session,
-                    query=query,
-                    page=page,
-                    number_of_results=results_per_page,
+    candidates.extend(
+        page_candidates
+    )
+
+    rejected_non_solid += (
+        page_rejected_non_solid
+    )
+
+    rejected_other += (
+        page_rejected_other
+    )
+
+    completed_pages = 1
+
+    print(
+        f"[{completed_pages:,}/"
+        f"{total_pages:,}] "
+        f"Page 1 | "
+        f"{new_products} new | "
+        f"+{len(page_candidates)} usable | "
+        f"{len(candidates):,} total"
+    )
+
+    # --------------------------------------------------------
+    # PARALLEL SCAN
+    # --------------------------------------------------------
+
+    if total_pages > 1:
+
+        print()
+        print(
+            "Starting parallel scan..."
+        )
+        print()
+
+        with ThreadPoolExecutor(
+            max_workers=MAX_WORKERS
+        ) as executor:
+
+            futures = {}
+
+            for page in range(
+                2,
+                total_pages + 1,
+            ):
+                future = executor.submit(
+                    fetch_page,
+                    page,
+                    query,
+                    results_per_page,
                 )
 
-        except Exception as error:
-            print(
-                f"[{page:,}/{total_pages:,}] "
-                f"ERROR: {error}"
-            )
-
-            time.sleep(2)
-            continue
-
-        if not products:
-            print(
-                f"[{page:,}/{total_pages:,}] "
-                "No products returned - stopping."
-            )
-            break
-
-        new_products = 0
-        new_candidates = 0
-
-        for product in products:
-            code = product.get("Code")
-
-            if not code:
-                continue
+                futures[future] = page
 
             # ------------------------------------------------
-            # DUPLICATE PROTECTION
+            # PROCESS AS REQUESTS COMPLETE
             # ------------------------------------------------
 
-            if code in seen_codes:
-                continue
+            for future in as_completed(
+                futures
+            ):
+                requested_page = (
+                    futures[future]
+                )
 
-            seen_codes.add(code)
-            new_products += 1
+                try:
+                    (
+                        returned_page,
+                        products,
+                        _,
+                    ) = future.result()
 
-            title = product.get(
-                "Title",
-                "",
-            )
+                except Exception as error:
+                    completed_pages += 1
 
-            # ------------------------------------------------
-            # COUNT OBVIOUS NON-SOLID GOLD
-            # ------------------------------------------------
+                    print(
+                        f"[{completed_pages:,}/"
+                        f"{total_pages:,}] "
+                        f"Page {requested_page} "
+                        f"FAILED: {error}"
+                    )
 
-            if not is_solid_gold_candidate(title):
-                rejected_non_solid += 1
-                continue
+                    continue
 
-            # ------------------------------------------------
-            # CREATE CANDIDATE
-            # ------------------------------------------------
+                (
+                    page_candidates,
+                    new_products,
+                    page_rejected_non_solid,
+                    page_rejected_other,
+                ) = process_products(
+                    products,
+                    seen_codes,
+                )
 
-            candidate = create_candidate(
-                product
-            )
+                candidates.extend(
+                    page_candidates
+                )
 
-            if candidate is None:
-                rejected_missing_gold_data += 1
-                continue
+                rejected_non_solid += (
+                    page_rejected_non_solid
+                )
 
-            candidates.append(candidate)
-            new_candidates += 1
+                rejected_other += (
+                    page_rejected_other
+                )
 
-        print(
-            f"[{page:,}/{total_pages:,}] "
-            f"{len(products)} returned | "
-            f"{new_products} new | "
-            f"+{new_candidates} usable | "
-            f"{len(candidates):,} total"
-        )
+                completed_pages += 1
 
-        # Don't hammer the API
-        time.sleep(REQUEST_DELAY)
+                print(
+                    f"[{completed_pages:,}/"
+                    f"{total_pages:,}] "
+                    f"Page {returned_page:,} | "
+                    f"{len(products)} returned | "
+                    f"{new_products} new | "
+                    f"+{len(page_candidates)} usable | "
+                    f"{len(candidates):,} total"
+                )
 
     # --------------------------------------------------------
-    # SCAN SUMMARY
+    # SUMMARY
     # --------------------------------------------------------
 
     print()
-    print("=" * 70)
-    print("                     SCAN SUMMARY")
-    print("=" * 70)
+    print("=" * 72)
+    print("                         SCAN SUMMARY")
+    print("=" * 72)
 
     print(
         f"Unique products scanned:        "
@@ -474,13 +762,13 @@ def find_gold_candidates(
     )
 
     print(
-        f"Rejected plated/filled/etc:     "
+        f"Rejected mixed/filled/stones:   "
         f"{rejected_non_solid:,}"
     )
 
     print(
         f"Rejected missing carat/weight:  "
-        f"{rejected_missing_gold_data:,}"
+        f"{rejected_other:,}"
     )
 
     print(
@@ -488,7 +776,7 @@ def find_gold_candidates(
         f"{len(candidates):,}"
     )
 
-    print("=" * 70)
+    print("=" * 72)
 
     return candidates
 
@@ -523,7 +811,7 @@ def analyse_products(
         )
 
         # ----------------------------------------------------
-        # GOLD VALUE PER GRAM OF THIS CARAT
+        # GOLD VALUE PER GRAM
         # ----------------------------------------------------
 
         gold_value_per_gram = (
@@ -574,10 +862,12 @@ def analyse_products(
         ) * 100
 
         # ----------------------------------------------------
-        # SAVE CALCULATIONS
+        # SAVE VALUES
         # ----------------------------------------------------
 
-        product["purity"] = purity
+        product[
+            "purity"
+        ] = purity
 
         product[
             "pure_gold_equivalent"
@@ -613,7 +903,9 @@ def analyse_products(
 
     analysed_products.sort(
         key=lambda product:
-        product["price_vs_gold_pct"]
+        product[
+            "price_vs_gold_pct"
+        ]
     )
 
     return analysed_products
@@ -768,7 +1060,9 @@ def display_results(
         print()
 
         print("URL:")
-        print(product["url"])
+        print(
+            product["url"]
+        )
 
 
 # ============================================================
@@ -776,19 +1070,24 @@ def display_results(
 # ============================================================
 
 if __name__ == "__main__":
+
+    start_time = time.time()
+
     try:
+
         # ----------------------------------------------------
-        # STEP 1 - SCAN FULL CATALOGUE SEARCH
+        # STEP 1 - SCAN CASHIES
         # ----------------------------------------------------
 
         products = find_gold_candidates(
             query="9ct gold",
-            results_per_page=24,
+            results_per_page=RESULTS_PER_PAGE,
         )
 
         if not products:
+            print()
             print(
-                "\nNo usable gold products "
+                "No usable gold products "
                 "were found."
             )
 
@@ -813,7 +1112,7 @@ if __name__ == "__main__":
         )
 
         # ----------------------------------------------------
-        # STEP 3 - ANALYSE PRODUCTS
+        # STEP 3 - ANALYSE
         # ----------------------------------------------------
 
         print()
@@ -830,7 +1129,7 @@ if __name__ == "__main__":
         )
 
         # ----------------------------------------------------
-        # STEP 4 - DISPLAY BEST 20
+        # STEP 4 - DISPLAY TOP 20
         # ----------------------------------------------------
 
         display_results(
@@ -838,6 +1137,25 @@ if __name__ == "__main__":
             gold_price,
             number_to_show=20,
         )
+
+        # ----------------------------------------------------
+        # RUNTIME
+        # ----------------------------------------------------
+
+        elapsed = (
+            time.time()
+            - start_time
+        )
+
+        print()
+        print("=" * 72)
+
+        print(
+            f"Total runtime: "
+            f"{elapsed:.1f} seconds"
+        )
+
+        print("=" * 72)
 
     except KeyboardInterrupt:
         print()
