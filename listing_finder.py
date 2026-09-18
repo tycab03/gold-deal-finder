@@ -10,11 +10,10 @@ from gold_price import get_gold_price_per_gram
 # ============================================================
 
 BASE_URL = "https://www.cashconverters.com.au"
+SEARCH_ENDPOINT = BASE_URL + "/c3api/search/results"
 
-SEARCH_ENDPOINT = (
-    BASE_URL
-    + "/c3api/search/results"
-)
+RESULTS_PER_PAGE = 24
+REQUEST_DELAY = 0.5
 
 HEADERS = {
     "User-Agent": (
@@ -27,8 +26,6 @@ HEADERS = {
     "Accept": "application/json",
 }
 
-
-# Gold purity values
 SUPPORTED_CARATS = {
     9: 0.375,
     14: 0.585,
@@ -39,22 +36,21 @@ SUPPORTED_CARATS = {
 
 
 # ============================================================
-# EXTRACT CARAT FROM PRODUCT TITLE
+# EXTRACT CARAT
 # ============================================================
 
 def extract_carat(title):
     """
-    Extract gold carat from titles such as:
-
-    9ct Yellow Gold Chain
-    18CT Gold Ring
-    14ct White Gold Pendant
+    Examples:
+        9ct Yellow Gold Chain
+        18CT Gold Ring
+        14ct White Gold Pendant
     """
 
     match = re.search(
         r"\b(9|14|18|22|24)\s*ct\b",
         title,
-        re.IGNORECASE
+        re.IGNORECASE,
     )
 
     if match:
@@ -64,50 +60,46 @@ def extract_carat(title):
 
 
 # ============================================================
-# EXTRACT WEIGHT FROM PRODUCT TITLE
+# EXTRACT WEIGHT
 # ============================================================
 
 def extract_weight(title):
     """
-    Extract weight from titles such as:
-
-    Gold Bangle - 8.99G
-    Gold Pendant 2.3G
-    Gold Chain 12G
+    Examples:
+        Gold Bangle - 8.99G
+        Gold Pendant 2.3G
+        Gold Chain 12G
     """
 
     matches = re.findall(
         r"(\d+(?:\.\d+)?)\s*[gG]\b",
-        title
+        title,
     )
 
     if not matches:
         return None
 
-    # Usually the final gram value
-    # in the title is the product weight.
     return float(matches[-1])
 
 
 # ============================================================
-# SEARCH CASH CONVERTERS API
+# CASHIES SEARCH API
 # ============================================================
 
 def search_cashies(
-    query="9ct gold",
-    page=1,
-    number_of_results=24
+    session,
+    query,
+    page,
+    number_of_results=RESULTS_PER_PAGE,
 ):
-
     params = {
         "query": query,
         "page": page,
         "NumberOfResults": number_of_results,
     }
 
-    response = requests.get(
+    response = session.get(
         SEARCH_ENDPOINT,
-        headers=HEADERS,
         params=params,
         timeout=20,
     )
@@ -117,265 +109,270 @@ def search_cashies(
     data = response.json()
 
     if not data.get("WasSuccessful"):
-
         raise RuntimeError(
             "Cashies search failed: "
             + str(data.get("Message"))
         )
 
-    product_list = (
-        data["Value"]["ProductList"]
+    product_list = data["Value"]["ProductList"]
+
+    products = product_list.get(
+        "ProductListItems",
+        [],
     )
 
-    products = product_list[
-        "ProductListItems"
-    ]
-
-    total = product_list[
-        "ProductListItemCount"
-    ]
+    total = product_list.get(
+        "ProductListItemCount",
+        0,
+    )
 
     return products, total
 
 
 # ============================================================
-# FIND GOLD PRODUCTS
+# CONVERT API PRODUCT INTO GOLD CANDIDATE
+# ============================================================
+
+def create_candidate(product):
+    code = product.get("Code")
+
+    if not code:
+        return None
+
+    title = product.get(
+        "Title",
+        "",
+    )
+
+    carat = extract_carat(title)
+    weight = extract_weight(title)
+
+    if carat not in SUPPORTED_CARATS:
+        return None
+
+    if weight is None:
+        return None
+
+    # --------------------------------------------------------
+    # PRICE
+    # --------------------------------------------------------
+
+    try:
+        price = float(
+            product.get("Sp")
+            or product.get("Rrp")
+        )
+
+    except (TypeError, ValueError):
+        return None
+
+    # --------------------------------------------------------
+    # SHIPPING
+    # --------------------------------------------------------
+
+    try:
+        shipping = float(
+            product.get("ShippingCost")
+            or 0
+        )
+
+    except (TypeError, ValueError):
+        shipping = 0.0
+
+    # --------------------------------------------------------
+    # URL
+    # --------------------------------------------------------
+
+    url = product.get("Url")
+
+    if url and url.startswith("/"):
+        url = BASE_URL + url
+
+    return {
+        "code": code,
+        "title": title,
+        "price": price,
+        "shipping": shipping,
+        "carat": carat,
+        "weight": weight,
+        "store": product.get(
+            "StoreNameWithState"
+        ),
+        "category": product.get(
+            "Category"
+        ),
+        "url": url,
+    }
+
+
+# ============================================================
+# SCAN FULL CASHIES RESULT SET
 # ============================================================
 
 def find_gold_candidates(
     query="9ct gold",
-    pages=10,
-    results_per_page=24
+    results_per_page=RESULTS_PER_PAGE,
 ):
-
     candidates = []
-
     seen_codes = set()
 
-    total = 0
-
-    print(
-        "=== CASHIES GOLD CANDIDATE FINDER ==="
-    )
+    session = requests.Session()
+    session.headers.update(HEADERS)
 
     print()
+    print("=" * 70)
+    print("              CASHIES FULL GOLD SCANNER")
+    print("=" * 70)
 
+    print()
+    print(f"Search: {query}")
+    print("Checking catalogue size...")
+
+    # --------------------------------------------------------
+    # FIRST REQUEST
+    # --------------------------------------------------------
+
+    first_products, total = search_cashies(
+        session=session,
+        query=query,
+        page=1,
+        number_of_results=results_per_page,
+    )
+
+    total_pages = (
+        total + results_per_page - 1
+    ) // results_per_page
+
+    print()
     print(
-        f"Search: {query}"
+        f"Catalogue results: "
+        f"{total:,}"
     )
 
     print(
-        f"Pages to scan: {pages}"
+        f"Results per page:  "
+        f"{results_per_page}"
+    )
+
+    print(
+        f"Pages required:    "
+        f"{total_pages:,}"
     )
 
     print()
 
     # --------------------------------------------------------
-    # SCAN SEARCH PAGES
+    # SCAN EVERY PAGE
     # --------------------------------------------------------
 
     for page in range(
         1,
-        pages + 1
+        total_pages + 1,
     ):
-
-        print(
-            f"Fetching page "
-            f"{page}/{pages}..."
-        )
-
         try:
+            if page == 1:
+                products = first_products
 
-            products, total = search_cashies(
-                query=query,
-                page=page,
-                number_of_results=results_per_page,
-            )
+            else:
+                products, _ = search_cashies(
+                    session=session,
+                    query=query,
+                    page=page,
+                    number_of_results=results_per_page,
+                )
 
         except Exception as error:
-
             print(
-                f"  Error fetching page "
-                f"{page}: {error}"
+                f"[{page:,}/{total_pages:,}] "
+                f"ERROR: {error}"
             )
 
+            time.sleep(2)
             continue
 
-        print(
-            f"  API returned "
-            f"{len(products)} products"
-        )
-
-        # ----------------------------------------------------
-        # PROCESS PRODUCTS
-        # ----------------------------------------------------
-
-        for product in products:
-
-            code = product.get(
-                "Code"
+        # Stop if Cashies stops returning products
+        if not products:
+            print(
+                f"[{page:,}/{total_pages:,}] "
+                "No products returned."
             )
 
-            # Skip products without code
+            print(
+                "Stopping scan."
+            )
+
+            break
+
+        new_products = 0
+        new_candidates = 0
+
+        for product in products:
+            code = product.get("Code")
+
             if not code:
                 continue
 
-            # Skip duplicates
+            # Duplicate protection
             if code in seen_codes:
                 continue
 
             seen_codes.add(code)
+            new_products += 1
 
-            title = product.get(
-                "Title",
-                ""
+            candidate = create_candidate(
+                product
             )
 
-            # Extract gold information
-            carat = extract_carat(
-                title
-            )
-
-            weight = extract_weight(
-                title
-            )
-
-            # We need a recognised carat
-            if carat not in SUPPORTED_CARATS:
+            if candidate is None:
                 continue
 
-            # We need weight to calculate
-            # theoretical gold value
-            if weight is None:
-                continue
+            candidates.append(candidate)
+            new_candidates += 1
 
-            # ------------------------------------------------
-            # PRICE
-            # ------------------------------------------------
+        print(
+            f"[{page:,}/{total_pages:,}] "
+            f"{len(products)} returned | "
+            f"{new_products} new | "
+            f"+{new_candidates} usable | "
+            f"{len(candidates):,} total usable"
+        )
 
-            try:
-
-                price = float(
-                    product.get("Sp")
-                    or product.get("Rrp")
-                )
-
-            except (
-                TypeError,
-                ValueError
-            ):
-
-                continue
-
-            # ------------------------------------------------
-            # SHIPPING
-            # ------------------------------------------------
-
-            try:
-
-                shipping = float(
-                    product.get(
-                        "ShippingCost"
-                    )
-                    or 0
-                )
-
-            except (
-                TypeError,
-                ValueError
-            ):
-
-                shipping = 0.0
-
-            # ------------------------------------------------
-            # URL
-            # ------------------------------------------------
-
-            url = product.get(
-                "Url"
-            )
-
-            if (
-                url
-                and url.startswith("/")
-            ):
-
-                url = (
-                    BASE_URL
-                    + url
-                )
-
-            # ------------------------------------------------
-            # SAVE CANDIDATE
-            # ------------------------------------------------
-
-            candidates.append({
-                "code": code,
-                "title": title,
-                "price": price,
-                "shipping": shipping,
-                "carat": carat,
-                "weight": weight,
-                "store": product.get(
-                    "StoreNameWithState"
-                ),
-                "category": product.get(
-                    "Category"
-                ),
-                "url": url,
-            })
-
-        # Small delay between requests
-        time.sleep(0.5)
-
-    # --------------------------------------------------------
-    # SUMMARY
-    # --------------------------------------------------------
+        # Don't hammer the API
+        time.sleep(REQUEST_DELAY)
 
     print()
+    print("=" * 70)
 
     print(
-        f"Catalogue reports "
-        f"{total:,} matching products."
+        f"Unique catalogue products scanned: "
+        f"{len(seen_codes):,}"
     )
 
     print(
-        f"Found "
-        f"{len(candidates)} products "
-        f"with carat + weight in title."
+        f"Products with usable carat + weight: "
+        f"{len(candidates):,}"
     )
+
+    print("=" * 70)
 
     return candidates
 
 
 # ============================================================
-# ANALYSE GOLD VALUE
+# CALCULATE GOLD VALUES
 # ============================================================
 
 def analyse_products(
     products,
-    gold_price
+    gold_price,
 ):
-
     analysed_products = []
 
     for product in products:
-
-        carat = product[
-            "carat"
-        ]
-
-        weight = product[
-            "weight"
-        ]
-
-        price = product[
-            "price"
-        ]
-
-        shipping = product[
-            "shipping"
-        ]
+        carat = product["carat"]
+        weight = product["weight"]
+        price = product["price"]
+        shipping = product["shipping"]
 
         purity = SUPPORTED_CARATS[
             carat
@@ -399,8 +396,11 @@ def analyse_products(
             * gold_value_per_gram
         )
 
+        if theoretical_gold_value <= 0:
+            continue
+
         # ----------------------------------------------------
-        # TOTAL ACQUISITION PRICE
+        # TOTAL PURCHASE COST
         # ----------------------------------------------------
 
         total_price = (
@@ -409,7 +409,7 @@ def analyse_products(
         )
 
         # ----------------------------------------------------
-        # DIFFERENCE VS GOLD VALUE
+        # DIFFERENCE
         # ----------------------------------------------------
 
         difference = (
@@ -418,7 +418,7 @@ def analyse_products(
         )
 
         # ----------------------------------------------------
-        # PERCENTAGE ABOVE / BELOW GOLD VALUE
+        # PRICE VS THEORETICAL GOLD VALUE
         # ----------------------------------------------------
 
         price_vs_gold_pct = (
@@ -430,12 +430,23 @@ def analyse_products(
         ) * 100
 
         # ----------------------------------------------------
-        # ADD CALCULATED VALUES
+        # PURE GOLD EQUIVALENT
         # ----------------------------------------------------
 
+        pure_gold_equivalent = (
+            weight
+            * purity
+        )
+
+        # ----------------------------------------------------
+        # STORE RESULTS
+        # ----------------------------------------------------
+
+        product["purity"] = purity
+
         product[
-            "purity"
-        ] = purity
+            "pure_gold_equivalent"
+        ] = pure_gold_equivalent
 
         product[
             "gold_value_per_gram"
@@ -462,14 +473,12 @@ def analyse_products(
         )
 
     # --------------------------------------------------------
-    # SORT BEST -> WORST
+    # BEST -> WORST
     # --------------------------------------------------------
 
     analysed_products.sort(
         key=lambda product:
-        product[
-            "price_vs_gold_pct"
-        ]
+        product["price_vs_gold_pct"]
     )
 
     return analysed_products
@@ -482,64 +491,66 @@ def analyse_products(
 def display_results(
     products,
     gold_price,
-    number_to_show=20
+    number_to_show=20,
 ):
-
     print()
     print()
 
-    print(
-        "=" * 72
-    )
-
-    print(
-        "                    BEST GOLD DEALS"
-    )
-
-    print(
-        "=" * 72
-    )
+    print("=" * 72)
+    print("                    BEST GOLD DEALS")
+    print("=" * 72)
 
     print()
 
     print(
-        f"24ct Spot Price: "
+        f"24ct Spot Price:       "
         f"${gold_price:.2f} AUD/g"
     )
 
     print(
-        f"9ct Gold Value:  "
+        f"9ct Gold Value:        "
         f"${gold_price * 0.375:.2f}/g"
     )
 
     print(
-        f"Products Analysed: "
-        f"{len(products)}"
+        f"14ct Gold Value:       "
+        f"${gold_price * 0.585:.2f}/g"
+    )
+
+    print(
+        f"18ct Gold Value:       "
+        f"${gold_price * 0.750:.2f}/g"
+    )
+
+    print()
+
+    print(
+        f"Products Analysed:     "
+        f"{len(products):,}"
+    )
+
+    print(
+        f"Showing Best:          "
+        f"{min(number_to_show, len(products))}"
     )
 
     # --------------------------------------------------------
-    # TOP RESULTS
+    # TOP DEALS
     # --------------------------------------------------------
 
     for rank, product in enumerate(
         products[:number_to_show],
-        start=1
+        start=1,
     ):
-
         print()
-
-        print(
-            "=" * 72
-        )
+        print("=" * 72)
 
         print(
             f"#{rank}  "
             f"{product['title']}"
         )
 
-        print(
-            "-" * 72
-        )
+        print("-" * 72)
 
         print(
             f"Listing Price:       "
@@ -571,6 +582,11 @@ def display_results(
         print(
             f"Purity:              "
             f"{product['purity'] * 100:.1f}%"
+        )
+
+        print(
+            f"Pure Gold Equivalent:"
+            f" {product['pure_gold_equivalent']:.2f}g"
         )
 
         print()
@@ -611,93 +627,91 @@ def display_results(
 
         print()
 
-        print(
-            f"URL:"
-        )
-
-        print(
-            product["url"]
-        )
+        print("URL:")
+        print(product["url"])
 
 
 # ============================================================
-# MAIN PROGRAM
+# MAIN
 # ============================================================
 
 if __name__ == "__main__":
+    try:
+        # ----------------------------------------------------
+        # STEP 1
+        # SCAN THE FULL CASHIES SEARCH
+        # ----------------------------------------------------
 
-    print()
-
-    # --------------------------------------------------------
-    # STEP 1 - FIND CASHIES PRODUCTS
-    # --------------------------------------------------------
-
-    products = find_gold_candidates(
-        query="9ct gold",
-        pages=10,
-        results_per_page=24,
-    )
-
-    if not products:
-
-        print(
-            "\nNo suitable gold "
-            "products were found."
+        products = find_gold_candidates(
+            query="9ct gold",
+            results_per_page=24,
         )
 
-        raise SystemExit
+        if not products:
+            print(
+                "\nNo usable gold "
+                "products were found."
+            )
 
-    # --------------------------------------------------------
-    # STEP 2 - GET LIVE GOLD PRICE
-    # --------------------------------------------------------
+            raise SystemExit
 
-    print()
+        # ----------------------------------------------------
+        # STEP 2
+        # GET LIVE GOLD PRICE
+        # ----------------------------------------------------
 
-    print(
-        "Fetching live gold price..."
-    )
-
-    try:
+        print()
+        print(
+            "Fetching live gold price..."
+        )
 
         gold_price = (
             get_gold_price_per_gram()
         )
 
-    except Exception as error:
-
         print(
-            "Could not fetch "
-            f"gold price: {error}"
+            f"Current 24ct spot price: "
+            f"${gold_price:.2f} AUD/g"
         )
 
-        raise SystemExit
+        # ----------------------------------------------------
+        # STEP 3
+        # CALCULATE VALUES
+        # ----------------------------------------------------
 
-    print(
-        f"Current 24ct spot price: "
-        f"${gold_price:.2f} AUD/g"
-    )
-
-    # --------------------------------------------------------
-    # STEP 3 - ANALYSE PRODUCTS
-    # --------------------------------------------------------
-
-    print(
-        "\nCalculating gold values..."
-    )
-
-    analysed_products = (
-        analyse_products(
-            products,
-            gold_price
+        print()
+        print(
+            "Calculating theoretical "
+            "gold values..."
         )
-    )
 
-    # --------------------------------------------------------
-    # STEP 4 - DISPLAY BEST DEALS
-    # --------------------------------------------------------
+        analysed_products = (
+            analyse_products(
+                products,
+                gold_price,
+            )
+        )
 
-    display_results(
-        analysed_products,
-        gold_price,
-        number_to_show=20
-    )
+        # ----------------------------------------------------
+        # STEP 4
+        # DISPLAY TOP 20
+        # ----------------------------------------------------
+
+        display_results(
+            analysed_products,
+            gold_price,
+            number_to_show=20,
+        )
+
+    except KeyboardInterrupt:
+        print()
+        print()
+        print(
+            "Scan cancelled by user."
+        )
+
+    except Exception as error:
+        print()
+        print(
+            f"Fatal error: {error}"
+        )
