@@ -1,0 +1,3935 @@
+{
+  "WasSuccessful": true,
+  "Message": null,
+  "Value": {
+    "UpperFacetGroupList": [
+      {
+        "Name": "Item Type",
+        "GroupName": "Item Type",
+        "Count": 10,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Ring",
+            "Count": 12333
+          },
+          {
+            "Selected": false,
+            "Term": "Pendant",
+            "Count": 2935
+          },
+          {
+            "Selected": false,
+            "Term": "Earring",
+            "Count": 1979
+          },
+          {
+            "Selected": false,
+            "Term": "Necklace",
+            "Count": 1908
+          },
+          {
+            "Selected": false,
+            "Term": "Bracelet",
+            "Count": 1498
+          },
+          {
+            "Selected": false,
+            "Term": "Chain",
+            "Count": 593
+          },
+          {
+            "Selected": false,
+            "Term": "Bangle",
+            "Count": 329
+          },
+          {
+            "Selected": false,
+            "Term": "Charm",
+            "Count": 63
+          },
+          {
+            "Selected": false,
+            "Term": "Brooch",
+            "Count": 50
+          },
+          {
+            "Selected": false,
+            "Term": "Anklet",
+            "Count": 24
+          }
+        ]
+      }
+    ],
+    "LowerFacetGroupList": [
+      {
+        "Name": "Type",
+        "GroupName": "Type",
+        "Count": 10,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Ring",
+            "Count": 12333
+          },
+          {
+            "Selected": false,
+            "Term": "Pendant",
+            "Count": 2935
+          },
+          {
+            "Selected": false,
+            "Term": "Earring",
+            "Count": 1979
+          },
+          {
+            "Selected": false,
+            "Term": "Necklace",
+            "Count": 1908
+          },
+          {
+            "Selected": false,
+            "Term": "Bracelet",
+            "Count": 1827
+          },
+          {
+            "Selected": false,
+            "Term": "Chain",
+            "Count": 593
+          },
+          {
+            "Selected": false,
+            "Term": "Charm",
+            "Count": 63
+          },
+          {
+            "Selected": false,
+            "Term": "Brooch",
+            "Count": 50
+          },
+          {
+            "Selected": false,
+            "Term": "Anklet",
+            "Count": 24
+          },
+          {
+            "Selected": false,
+            "Term": "Other",
+            "Count": 13
+          }
+        ]
+      },
+      {
+        "Name": "Delivery Options",
+        "GroupName": "Delivery Options",
+        "Count": 4,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Paid Postage Australia Wide",
+            "Count": 17415
+          },
+          {
+            "Selected": false,
+            "Term": "Free Postage Australia Wide",
+            "Count": 4141
+          },
+          {
+            "Selected": false,
+            "Term": "Pickup In Store Only",
+            "Count": 150
+          },
+          {
+            "Selected": false,
+            "Term": "Enquire for Postage",
+            "Count": 19
+          }
+        ]
+      },
+      {
+        "Name": "Condition",
+        "GroupName": "Condition",
+        "Count": 1,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Not Specified",
+            "Count": 21725
+          }
+        ]
+      },
+      {
+        "Name": "Sub Type",
+        "GroupName": "Sub Type",
+        "Count": 37,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Diamond Ring",
+            "Count": 5147
+          },
+          {
+            "Selected": false,
+            "Term": "Ring With Stone",
+            "Count": 3917
+          },
+          {
+            "Selected": false,
+            "Term": "Ring",
+            "Count": 2922
+          },
+          {
+            "Selected": false,
+            "Term": "Pendant",
+            "Count": 2860
+          },
+          {
+            "Selected": false,
+            "Term": "Necklace",
+            "Count": 1908
+          },
+          {
+            "Selected": false,
+            "Term": "Bracelet",
+            "Count": 1498
+          },
+          {
+            "Selected": false,
+            "Term": "Earring",
+            "Count": 1095
+          },
+          {
+            "Selected": false,
+            "Term": "Chain",
+            "Count": 437
+          },
+          {
+            "Selected": false,
+            "Term": "Bangle",
+            "Count": 329
+          },
+          {
+            "Selected": false,
+            "Term": "Stud",
+            "Count": 312
+          },
+          {
+            "Selected": false,
+            "Term": "Drop",
+            "Count": 281
+          },
+          {
+            "Selected": false,
+            "Term": "Jewellery Ring",
+            "Count": 267
+          },
+          {
+            "Selected": false,
+            "Term": "Sleeper",
+            "Count": 196
+          },
+          {
+            "Selected": false,
+            "Term": "Chain Necklace",
+            "Count": 142
+          },
+          {
+            "Selected": false,
+            "Term": "Dia Stud",
+            "Count": 95
+          },
+          {
+            "Selected": false,
+            "Term": "Pendant On Chain",
+            "Count": 75
+          },
+          {
+            "Selected": false,
+            "Term": "Charm",
+            "Count": 63
+          },
+          {
+            "Selected": false,
+            "Term": "Ring Without Stone",
+            "Count": 50
+          },
+          {
+            "Selected": false,
+            "Term": "Brooch",
+            "Count": 50
+          },
+          {
+            "Selected": false,
+            "Term": "Wedding Band",
+            "Count": 12
+          },
+          {
+            "Selected": false,
+            "Term": "Wedder",
+            "Count": 9
+          },
+          {
+            "Selected": false,
+            "Term": "Anklet",
+            "Count": 9
+          },
+          {
+            "Selected": false,
+            "Term": "Cufflinks",
+            "Count": 8
+          },
+          {
+            "Selected": false,
+            "Term": "Maternity Ring",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "Neck Chain",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "Jewellery Chain",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "Anklet Bracelet",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "Anklet Chain",
+            "Count": 5
+          },
+          {
+            "Selected": false,
+            "Term": "Ankle Chain",
+            "Count": 3
+          },
+          {
+            "Selected": false,
+            "Term": "Russian Wedding Band",
+            "Count": 2
+          }
+        ]
+      },
+      {
+        "Name": "Material",
+        "GroupName": "Material",
+        "Count": 10,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Yellow Gold",
+            "Count": 17217
+          },
+          {
+            "Selected": false,
+            "Term": "White Gold",
+            "Count": 2816
+          },
+          {
+            "Selected": false,
+            "Term": "Yellow And White Gold",
+            "Count": 876
+          },
+          {
+            "Selected": false,
+            "Term": "Rose Gold",
+            "Count": 428
+          },
+          {
+            "Selected": false,
+            "Term": "Two Tone Gold",
+            "Count": 186
+          },
+          {
+            "Selected": false,
+            "Term": "Multi Tone Gold",
+            "Count": 93
+          },
+          {
+            "Selected": false,
+            "Term": "Yellow And Rose Gold",
+            "Count": 36
+          },
+          {
+            "Selected": false,
+            "Term": "Silver",
+            "Count": 8
+          },
+          {
+            "Selected": false,
+            "Term": "Copper",
+            "Count": 3
+          },
+          {
+            "Selected": false,
+            "Term": "Plastic",
+            "Count": 1
+          }
+        ]
+      },
+      {
+        "Name": "Carat",
+        "GroupName": "Carat",
+        "Count": 6,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "9",
+            "Count": 21649
+          },
+          {
+            "Selected": false,
+            "Term": "10",
+            "Count": 4
+          },
+          {
+            "Selected": false,
+            "Term": "18",
+            "Count": 3
+          },
+          {
+            "Selected": false,
+            "Term": "8",
+            "Count": 2
+          },
+          {
+            "Selected": false,
+            "Term": "14",
+            "Count": 2
+          },
+          {
+            "Selected": false,
+            "Term": "22",
+            "Count": 1
+          }
+        ]
+      },
+      {
+        "Name": "Gender",
+        "GroupName": "Gender",
+        "Count": 4,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Ladies",
+            "Count": 11313
+          },
+          {
+            "Selected": false,
+            "Term": "Unisex",
+            "Count": 2393
+          },
+          {
+            "Selected": false,
+            "Term": "Mens",
+            "Count": 1221
+          },
+          {
+            "Selected": false,
+            "Term": "Child",
+            "Count": 29
+          }
+        ]
+      },
+      {
+        "Name": "Shape",
+        "GroupName": "Shape",
+        "Count": 599,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Other",
+            "Count": 4396
+          },
+          {
+            "Selected": false,
+            "Term": "Cluster",
+            "Count": 1786
+          },
+          {
+            "Selected": false,
+            "Term": "Solitaire",
+            "Count": 1132
+          },
+          {
+            "Selected": false,
+            "Term": "Patterned",
+            "Count": 820
+          },
+          {
+            "Selected": false,
+            "Term": "Link",
+            "Count": 809
+          },
+          {
+            "Selected": false,
+            "Term": "Straight Stones",
+            "Count": 765
+          },
+          {
+            "Selected": false,
+            "Term": "Curb",
+            "Count": 663
+          },
+          {
+            "Selected": false,
+            "Term": "Hoop",
+            "Count": 617
+          },
+          {
+            "Selected": false,
+            "Term": "Line",
+            "Count": 587
+          },
+          {
+            "Selected": false,
+            "Term": "Plain",
+            "Count": 405
+          },
+          {
+            "Selected": false,
+            "Term": "Stud",
+            "Count": 372
+          },
+          {
+            "Selected": false,
+            "Term": "Figaro",
+            "Count": 348
+          },
+          {
+            "Selected": false,
+            "Term": "Drop/Dangling",
+            "Count": 343
+          },
+          {
+            "Selected": false,
+            "Term": "Curved Stones",
+            "Count": 322
+          },
+          {
+            "Selected": false,
+            "Term": "Cross/Crucifix",
+            "Count": 239
+          },
+          {
+            "Selected": false,
+            "Term": "Belcher",
+            "Count": 223
+          },
+          {
+            "Selected": false,
+            "Term": "Solid",
+            "Count": 210
+          },
+          {
+            "Selected": false,
+            "Term": "Flat",
+            "Count": 194
+          },
+          {
+            "Selected": false,
+            "Term": "Three Stone",
+            "Count": 135
+          },
+          {
+            "Selected": false,
+            "Term": "Heart",
+            "Count": 116
+          },
+          {
+            "Selected": false,
+            "Term": "Animals",
+            "Count": 81
+          },
+          {
+            "Selected": false,
+            "Term": "Rope",
+            "Count": 67
+          },
+          {
+            "Selected": false,
+            "Term": "Halo",
+            "Count": 62
+          },
+          {
+            "Selected": false,
+            "Term": "Pave",
+            "Count": 55
+          },
+          {
+            "Selected": false,
+            "Term": "Lockets",
+            "Count": 52
+          },
+          {
+            "Selected": false,
+            "Term": "Letters",
+            "Count": 39
+          },
+          {
+            "Selected": false,
+            "Term": "Box",
+            "Count": 38
+          },
+          {
+            "Selected": false,
+            "Term": "Oval",
+            "Count": 27
+          },
+          {
+            "Selected": false,
+            "Term": "Snake",
+            "Count": 26
+          },
+          {
+            "Selected": false,
+            "Term": "Invisible Set",
+            "Count": 26
+          }
+        ]
+      },
+      {
+        "Name": "Colour",
+        "GroupName": "Colour",
+        "Count": 135,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Yellow",
+            "Count": 9953
+          },
+          {
+            "Selected": false,
+            "Term": "White",
+            "Count": 1334
+          },
+          {
+            "Selected": false,
+            "Term": "Silver",
+            "Count": 224
+          },
+          {
+            "Selected": false,
+            "Term": "Gold",
+            "Count": 188
+          },
+          {
+            "Selected": false,
+            "Term": "Rose",
+            "Count": 86
+          },
+          {
+            "Selected": false,
+            "Term": "Blue",
+            "Count": 80
+          },
+          {
+            "Selected": false,
+            "Term": "Yellow Gold",
+            "Count": 74
+          },
+          {
+            "Selected": false,
+            "Term": "Red",
+            "Count": 67
+          },
+          {
+            "Selected": false,
+            "Term": "Clear",
+            "Count": 55
+          },
+          {
+            "Selected": false,
+            "Term": "Yellow And White",
+            "Count": 45
+          },
+          {
+            "Selected": false,
+            "Term": "Pink",
+            "Count": 35
+          },
+          {
+            "Selected": false,
+            "Term": "Green",
+            "Count": 31
+          },
+          {
+            "Selected": false,
+            "Term": "Purple",
+            "Count": 25
+          },
+          {
+            "Selected": false,
+            "Term": "Rose Gold",
+            "Count": 24
+          },
+          {
+            "Selected": false,
+            "Term": "Black",
+            "Count": 18
+          },
+          {
+            "Selected": false,
+            "Term": "Yellow & White",
+            "Count": 14
+          },
+          {
+            "Selected": false,
+            "Term": "White Gold",
+            "Count": 14
+          },
+          {
+            "Selected": false,
+            "Term": "Yellow/White",
+            "Count": 12
+          },
+          {
+            "Selected": false,
+            "Term": "Yellow And Silver",
+            "Count": 12
+          },
+          {
+            "Selected": false,
+            "Term": "Two Tone",
+            "Count": 11
+          },
+          {
+            "Selected": false,
+            "Term": "Yellow / White",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "2 Tone",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "Y",
+            "Count": 5
+          },
+          {
+            "Selected": false,
+            "Term": "Pearl",
+            "Count": 5
+          },
+          {
+            "Selected": false,
+            "Term": "Yellow And Pink",
+            "Count": 3
+          },
+          {
+            "Selected": false,
+            "Term": "Yellow + White Gold",
+            "Count": 3
+          },
+          {
+            "Selected": false,
+            "Term": "Yellow + White",
+            "Count": 3
+          },
+          {
+            "Selected": false,
+            "Term": "Yellow & Silver",
+            "Count": 3
+          },
+          {
+            "Selected": false,
+            "Term": "None",
+            "Count": 3
+          },
+          {
+            "Selected": false,
+            "Term": "Yelow",
+            "Count": 2
+          }
+        ]
+      },
+      {
+        "Name": "Ring Size",
+        "GroupName": "Ring Size",
+        "Count": 54,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "O",
+            "Count": 1989
+          },
+          {
+            "Selected": false,
+            "Term": "N",
+            "Count": 1042
+          },
+          {
+            "Selected": false,
+            "Term": "Q",
+            "Count": 861
+          },
+          {
+            "Selected": false,
+            "Term": "N\u00bd",
+            "Count": 846
+          },
+          {
+            "Selected": false,
+            "Term": "M",
+            "Count": 786
+          },
+          {
+            "Selected": false,
+            "Term": "P",
+            "Count": 689
+          },
+          {
+            "Selected": false,
+            "Term": "O\u00bd",
+            "Count": 575
+          },
+          {
+            "Selected": false,
+            "Term": "M\u00bd",
+            "Count": 482
+          },
+          {
+            "Selected": false,
+            "Term": "L",
+            "Count": 460
+          },
+          {
+            "Selected": false,
+            "Term": "P\u00bd",
+            "Count": 391
+          },
+          {
+            "Selected": false,
+            "Term": "L\u00bd",
+            "Count": 378
+          },
+          {
+            "Selected": false,
+            "Term": "R",
+            "Count": 366
+          },
+          {
+            "Selected": false,
+            "Term": "S",
+            "Count": 283
+          },
+          {
+            "Selected": false,
+            "Term": "T",
+            "Count": 259
+          },
+          {
+            "Selected": false,
+            "Term": "K",
+            "Count": 257
+          },
+          {
+            "Selected": false,
+            "Term": "Q\u00bd",
+            "Count": 251
+          },
+          {
+            "Selected": false,
+            "Term": "U",
+            "Count": 223
+          },
+          {
+            "Selected": false,
+            "Term": "K\u00bd",
+            "Count": 206
+          },
+          {
+            "Selected": false,
+            "Term": "V",
+            "Count": 175
+          },
+          {
+            "Selected": false,
+            "Term": "J",
+            "Count": 161
+          },
+          {
+            "Selected": false,
+            "Term": "R\u00bd",
+            "Count": 160
+          },
+          {
+            "Selected": false,
+            "Term": "W",
+            "Count": 159
+          },
+          {
+            "Selected": false,
+            "Term": "T\u00bd",
+            "Count": 132
+          },
+          {
+            "Selected": false,
+            "Term": "J\u00bd",
+            "Count": 130
+          },
+          {
+            "Selected": false,
+            "Term": "X",
+            "Count": 122
+          },
+          {
+            "Selected": false,
+            "Term": "S\u00bd",
+            "Count": 114
+          },
+          {
+            "Selected": false,
+            "Term": "U\u00bd",
+            "Count": 105
+          },
+          {
+            "Selected": false,
+            "Term": "V\u00bd",
+            "Count": 97
+          },
+          {
+            "Selected": false,
+            "Term": "Y",
+            "Count": 85
+          },
+          {
+            "Selected": false,
+            "Term": "I\u00bd",
+            "Count": 79
+          }
+        ]
+      },
+      {
+        "Name": "Ring Band Type",
+        "GroupName": "Ring Band Type",
+        "Count": 3,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Smooth",
+            "Count": 7171
+          },
+          {
+            "Selected": false,
+            "Term": "Patterned",
+            "Count": 652
+          },
+          {
+            "Selected": false,
+            "Term": "Na",
+            "Count": 3
+          }
+        ]
+      },
+      {
+        "Name": "Stone Setting",
+        "GroupName": "Stone Setting",
+        "Count": 6,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Claw",
+            "Count": 3539
+          },
+          {
+            "Selected": false,
+            "Term": "Channel",
+            "Count": 806
+          },
+          {
+            "Selected": false,
+            "Term": "Bezel",
+            "Count": 703
+          },
+          {
+            "Selected": false,
+            "Term": "Other",
+            "Count": 441
+          },
+          {
+            "Selected": false,
+            "Term": "Pave",
+            "Count": 303
+          },
+          {
+            "Selected": false,
+            "Term": "Tension",
+            "Count": 150
+          }
+        ]
+      },
+      {
+        "Name": "Width (cm)",
+        "GroupName": "Width (cm)",
+        "Count": 81,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "0.3",
+            "Count": 461
+          },
+          {
+            "Selected": false,
+            "Term": "0.5",
+            "Count": 457
+          },
+          {
+            "Selected": false,
+            "Term": "0.2",
+            "Count": 435
+          },
+          {
+            "Selected": false,
+            "Term": "0.4",
+            "Count": 411
+          },
+          {
+            "Selected": false,
+            "Term": "0.1",
+            "Count": 319
+          },
+          {
+            "Selected": false,
+            "Term": "0.6",
+            "Count": 265
+          },
+          {
+            "Selected": false,
+            "Term": "1",
+            "Count": 251
+          },
+          {
+            "Selected": false,
+            "Term": "0.7",
+            "Count": 182
+          },
+          {
+            "Selected": false,
+            "Term": "1.5",
+            "Count": 177
+          },
+          {
+            "Selected": false,
+            "Term": "0.8",
+            "Count": 176
+          },
+          {
+            "Selected": false,
+            "Term": "0.9",
+            "Count": 130
+          },
+          {
+            "Selected": false,
+            "Term": "2",
+            "Count": 115
+          },
+          {
+            "Selected": false,
+            "Term": "1.2",
+            "Count": 114
+          },
+          {
+            "Selected": false,
+            "Term": "1.8",
+            "Count": 105
+          },
+          {
+            "Selected": false,
+            "Term": "1.7",
+            "Count": 101
+          },
+          {
+            "Selected": false,
+            "Term": "1.6",
+            "Count": 82
+          },
+          {
+            "Selected": false,
+            "Term": "1.3",
+            "Count": 76
+          },
+          {
+            "Selected": false,
+            "Term": "1.1",
+            "Count": 75
+          },
+          {
+            "Selected": false,
+            "Term": "1.4",
+            "Count": 60
+          },
+          {
+            "Selected": false,
+            "Term": "2.5",
+            "Count": 43
+          },
+          {
+            "Selected": false,
+            "Term": "1.9",
+            "Count": 41
+          },
+          {
+            "Selected": false,
+            "Term": "2.2",
+            "Count": 36
+          },
+          {
+            "Selected": false,
+            "Term": "3",
+            "Count": 29
+          },
+          {
+            "Selected": false,
+            "Term": "2.1",
+            "Count": 27
+          },
+          {
+            "Selected": false,
+            "Term": "6.5",
+            "Count": 25
+          },
+          {
+            "Selected": false,
+            "Term": "2.3",
+            "Count": 22
+          },
+          {
+            "Selected": false,
+            "Term": "2.7",
+            "Count": 21
+          },
+          {
+            "Selected": false,
+            "Term": "2.4",
+            "Count": 20
+          },
+          {
+            "Selected": false,
+            "Term": "0",
+            "Count": 17
+          },
+          {
+            "Selected": false,
+            "Term": "6",
+            "Count": 15
+          }
+        ]
+      },
+      {
+        "Name": "Length (cm)",
+        "GroupName": "Length (cm)",
+        "Count": 328,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "50",
+            "Count": 299
+          },
+          {
+            "Selected": false,
+            "Term": "2",
+            "Count": 260
+          },
+          {
+            "Selected": false,
+            "Term": "19",
+            "Count": 238
+          },
+          {
+            "Selected": false,
+            "Term": "45",
+            "Count": 207
+          },
+          {
+            "Selected": false,
+            "Term": "20",
+            "Count": 191
+          },
+          {
+            "Selected": false,
+            "Term": "55",
+            "Count": 170
+          },
+          {
+            "Selected": false,
+            "Term": "2.5",
+            "Count": 147
+          },
+          {
+            "Selected": false,
+            "Term": "18",
+            "Count": 140
+          },
+          {
+            "Selected": false,
+            "Term": "3",
+            "Count": 128
+          },
+          {
+            "Selected": false,
+            "Term": "60",
+            "Count": 116
+          },
+          {
+            "Selected": false,
+            "Term": "21",
+            "Count": 109
+          },
+          {
+            "Selected": false,
+            "Term": "1.5",
+            "Count": 98
+          },
+          {
+            "Selected": false,
+            "Term": "46",
+            "Count": 92
+          },
+          {
+            "Selected": false,
+            "Term": "2.2",
+            "Count": 92
+          },
+          {
+            "Selected": false,
+            "Term": "19.5",
+            "Count": 92
+          },
+          {
+            "Selected": false,
+            "Term": "56",
+            "Count": 90
+          },
+          {
+            "Selected": false,
+            "Term": "1.8",
+            "Count": 87
+          },
+          {
+            "Selected": false,
+            "Term": "51",
+            "Count": 77
+          },
+          {
+            "Selected": false,
+            "Term": "44",
+            "Count": 73
+          },
+          {
+            "Selected": false,
+            "Term": "22",
+            "Count": 67
+          },
+          {
+            "Selected": false,
+            "Term": "48",
+            "Count": 66
+          },
+          {
+            "Selected": false,
+            "Term": "18.5",
+            "Count": 66
+          },
+          {
+            "Selected": false,
+            "Term": "54",
+            "Count": 65
+          },
+          {
+            "Selected": false,
+            "Term": "52",
+            "Count": 64
+          },
+          {
+            "Selected": false,
+            "Term": "1.7",
+            "Count": 64
+          },
+          {
+            "Selected": false,
+            "Term": "1.6",
+            "Count": 63
+          },
+          {
+            "Selected": false,
+            "Term": "3.5",
+            "Count": 62
+          },
+          {
+            "Selected": false,
+            "Term": "2.3",
+            "Count": 62
+          },
+          {
+            "Selected": false,
+            "Term": "2.1",
+            "Count": 61
+          },
+          {
+            "Selected": false,
+            "Term": "40",
+            "Count": 57
+          }
+        ]
+      },
+      {
+        "Name": "Weight",
+        "GroupName": "Weight",
+        "Count": 1000,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "1.7G",
+            "Count": 126
+          },
+          {
+            "Selected": false,
+            "Term": "2G",
+            "Count": 125
+          },
+          {
+            "Selected": false,
+            "Term": "2.2G",
+            "Count": 125
+          },
+          {
+            "Selected": false,
+            "Term": "1.9G",
+            "Count": 117
+          },
+          {
+            "Selected": false,
+            "Term": "2.1G",
+            "Count": 113
+          },
+          {
+            "Selected": false,
+            "Term": "1.5G",
+            "Count": 106
+          },
+          {
+            "Selected": false,
+            "Term": "2.4G",
+            "Count": 101
+          },
+          {
+            "Selected": false,
+            "Term": "1.6G",
+            "Count": 97
+          },
+          {
+            "Selected": false,
+            "Term": "2.5G",
+            "Count": 95
+          },
+          {
+            "Selected": false,
+            "Term": "1.8G",
+            "Count": 90
+          },
+          {
+            "Selected": false,
+            "Term": "1.4G",
+            "Count": 90
+          },
+          {
+            "Selected": false,
+            "Term": "2.6G",
+            "Count": 86
+          },
+          {
+            "Selected": false,
+            "Term": "2.3G",
+            "Count": 86
+          },
+          {
+            "Selected": false,
+            "Term": "2.8G",
+            "Count": 81
+          },
+          {
+            "Selected": false,
+            "Term": "1.3G",
+            "Count": 78
+          },
+          {
+            "Selected": false,
+            "Term": "2.9G",
+            "Count": 76
+          },
+          {
+            "Selected": false,
+            "Term": "1.75G",
+            "Count": 76
+          },
+          {
+            "Selected": false,
+            "Term": "1.85G",
+            "Count": 75
+          },
+          {
+            "Selected": false,
+            "Term": "1.78G",
+            "Count": 75
+          },
+          {
+            "Selected": false,
+            "Term": "2.7G",
+            "Count": 74
+          },
+          {
+            "Selected": false,
+            "Term": "3.1G",
+            "Count": 73
+          },
+          {
+            "Selected": false,
+            "Term": "1.98G",
+            "Count": 73
+          },
+          {
+            "Selected": false,
+            "Term": "2.19G",
+            "Count": 71
+          },
+          {
+            "Selected": false,
+            "Term": "1G",
+            "Count": 70
+          },
+          {
+            "Selected": false,
+            "Term": "1.79G",
+            "Count": 70
+          },
+          {
+            "Selected": false,
+            "Term": "3.2G",
+            "Count": 69
+          },
+          {
+            "Selected": false,
+            "Term": "2.36G",
+            "Count": 69
+          },
+          {
+            "Selected": false,
+            "Term": "2.07G",
+            "Count": 69
+          },
+          {
+            "Selected": false,
+            "Term": "1.81G",
+            "Count": 69
+          },
+          {
+            "Selected": false,
+            "Term": "1.93G",
+            "Count": 68
+          }
+        ]
+      },
+      {
+        "Name": "Hero Stone Type",
+        "GroupName": "Hero Stone Type",
+        "Count": 32,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Diamond",
+            "Count": 1279
+          },
+          {
+            "Selected": false,
+            "Term": "Cubic Zirconia",
+            "Count": 227
+          },
+          {
+            "Selected": false,
+            "Term": "Pearl",
+            "Count": 72
+          },
+          {
+            "Selected": false,
+            "Term": "Ruby (Created)",
+            "Count": 71
+          },
+          {
+            "Selected": false,
+            "Term": "Sapphire",
+            "Count": 65
+          },
+          {
+            "Selected": false,
+            "Term": "Sapphire (Created)",
+            "Count": 58
+          },
+          {
+            "Selected": false,
+            "Term": "Topaz",
+            "Count": 46
+          },
+          {
+            "Selected": false,
+            "Term": "Amethyst",
+            "Count": 41
+          },
+          {
+            "Selected": false,
+            "Term": "Opal",
+            "Count": 29
+          },
+          {
+            "Selected": false,
+            "Term": "Garnet",
+            "Count": 26
+          },
+          {
+            "Selected": false,
+            "Term": "Emerald (Created)",
+            "Count": 26
+          },
+          {
+            "Selected": false,
+            "Term": "Onyx",
+            "Count": 23
+          },
+          {
+            "Selected": false,
+            "Term": "Ruby",
+            "Count": 16
+          },
+          {
+            "Selected": false,
+            "Term": "Diamond (Champagne)",
+            "Count": 8
+          },
+          {
+            "Selected": false,
+            "Term": "Moissanite",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "Emerald",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "Aquamarine",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "Quartz",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "Morganite",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "Jade",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "Diamond (Black)",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "Citrine",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "Peridot",
+            "Count": 5
+          },
+          {
+            "Selected": false,
+            "Term": "Diamond (Cognac)",
+            "Count": 3
+          },
+          {
+            "Selected": false,
+            "Term": "Cameo",
+            "Count": 3
+          },
+          {
+            "Selected": false,
+            "Term": "Tourmaline",
+            "Count": 2
+          },
+          {
+            "Selected": false,
+            "Term": "Spinel",
+            "Count": 2
+          }
+        ]
+      },
+      {
+        "Name": "Earring Type",
+        "GroupName": "Earring Type",
+        "Count": 2,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Pierced",
+            "Count": 1942
+          },
+          {
+            "Selected": false,
+            "Term": "Clip On",
+            "Count": 37
+          }
+        ]
+      },
+      {
+        "Name": "Total Diamond Weight",
+        "GroupName": "Total Diamond Weight",
+        "Count": 260,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "0.5",
+            "Count": 239
+          },
+          {
+            "Selected": false,
+            "Term": "1",
+            "Count": 169
+          },
+          {
+            "Selected": false,
+            "Term": "0.25",
+            "Count": 90
+          },
+          {
+            "Selected": false,
+            "Term": "0.2",
+            "Count": 67
+          },
+          {
+            "Selected": false,
+            "Term": "0.3",
+            "Count": 62
+          },
+          {
+            "Selected": false,
+            "Term": "0.1",
+            "Count": 57
+          },
+          {
+            "Selected": false,
+            "Term": "0.4",
+            "Count": 52
+          },
+          {
+            "Selected": false,
+            "Term": "0.15",
+            "Count": 49
+          },
+          {
+            "Selected": false,
+            "Term": "0.75",
+            "Count": 46
+          },
+          {
+            "Selected": false,
+            "Term": "0.6",
+            "Count": 43
+          },
+          {
+            "Selected": false,
+            "Term": "0.06",
+            "Count": 40
+          },
+          {
+            "Selected": false,
+            "Term": "0.02",
+            "Count": 36
+          },
+          {
+            "Selected": false,
+            "Term": "0.24",
+            "Count": 33
+          },
+          {
+            "Selected": false,
+            "Term": "0.22",
+            "Count": 33
+          },
+          {
+            "Selected": false,
+            "Term": "0.04",
+            "Count": 33
+          },
+          {
+            "Selected": false,
+            "Term": "0.35",
+            "Count": 32
+          },
+          {
+            "Selected": false,
+            "Term": "0.16",
+            "Count": 32
+          },
+          {
+            "Selected": false,
+            "Term": "0.01",
+            "Count": 32
+          },
+          {
+            "Selected": false,
+            "Term": "0.12",
+            "Count": 31
+          },
+          {
+            "Selected": false,
+            "Term": "0.55",
+            "Count": 30
+          },
+          {
+            "Selected": false,
+            "Term": "0.18",
+            "Count": 30
+          },
+          {
+            "Selected": false,
+            "Term": "0.36",
+            "Count": 29
+          },
+          {
+            "Selected": false,
+            "Term": "0.33",
+            "Count": 29
+          },
+          {
+            "Selected": false,
+            "Term": "0.21",
+            "Count": 29
+          },
+          {
+            "Selected": false,
+            "Term": "2",
+            "Count": 28
+          },
+          {
+            "Selected": false,
+            "Term": "0.34",
+            "Count": 27
+          },
+          {
+            "Selected": false,
+            "Term": "0.05",
+            "Count": 26
+          },
+          {
+            "Selected": false,
+            "Term": "0.03",
+            "Count": 26
+          },
+          {
+            "Selected": false,
+            "Term": "0.54",
+            "Count": 25
+          },
+          {
+            "Selected": false,
+            "Term": "0.11",
+            "Count": 25
+          }
+        ]
+      },
+      {
+        "Name": "Number Of Pendants",
+        "GroupName": "Number Of Pendants",
+        "Count": 8,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "1",
+            "Count": 1226
+          },
+          {
+            "Selected": false,
+            "Term": "0",
+            "Count": 146
+          },
+          {
+            "Selected": false,
+            "Term": "3",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "2",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "7",
+            "Count": 5
+          },
+          {
+            "Selected": false,
+            "Term": "9",
+            "Count": 1
+          },
+          {
+            "Selected": false,
+            "Term": "21",
+            "Count": 1
+          },
+          {
+            "Selected": false,
+            "Term": "11",
+            "Count": 1
+          }
+        ]
+      },
+      {
+        "Name": "Hero Stone Cut",
+        "GroupName": "Hero Stone Cut",
+        "Count": 8,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Round Brilliant",
+            "Count": 914
+          },
+          {
+            "Selected": false,
+            "Term": "Oval",
+            "Count": 127
+          },
+          {
+            "Selected": false,
+            "Term": "Princess",
+            "Count": 94
+          },
+          {
+            "Selected": false,
+            "Term": "Other",
+            "Count": 33
+          },
+          {
+            "Selected": false,
+            "Term": "Pear",
+            "Count": 30
+          },
+          {
+            "Selected": false,
+            "Term": "Emerald",
+            "Count": 29
+          },
+          {
+            "Selected": false,
+            "Term": "Heart",
+            "Count": 27
+          },
+          {
+            "Selected": false,
+            "Term": "Marquise",
+            "Count": 14
+          }
+        ]
+      },
+      {
+        "Name": "Make / Model",
+        "GroupName": "Make / Model",
+        "Count": 1000,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Prouds",
+            "Count": 194
+          },
+          {
+            "Selected": false,
+            "Term": "Diamond",
+            "Count": 179
+          },
+          {
+            "Selected": false,
+            "Term": "Angus & Coote",
+            "Count": 94
+          },
+          {
+            "Selected": false,
+            "Term": "Diamonds",
+            "Count": 67
+          },
+          {
+            "Selected": false,
+            "Term": "Cz",
+            "Count": 62
+          },
+          {
+            "Selected": false,
+            "Term": "Michael Hill",
+            "Count": 59
+          },
+          {
+            "Selected": false,
+            "Term": "Wallace Bishop",
+            "Count": 56
+          },
+          {
+            "Selected": false,
+            "Term": "Curb",
+            "Count": 36
+          },
+          {
+            "Selected": false,
+            "Term": "Heart",
+            "Count": 32
+          },
+          {
+            "Selected": false,
+            "Term": "Curb Link",
+            "Count": 31
+          },
+          {
+            "Selected": false,
+            "Term": "Dia",
+            "Count": 27
+          },
+          {
+            "Selected": false,
+            "Term": "Diamond Ring",
+            "Count": 22
+          },
+          {
+            "Selected": false,
+            "Term": "Cubic Zirconia",
+            "Count": 19
+          },
+          {
+            "Selected": false,
+            "Term": "***Weekend Special***",
+            "Count": 19
+          },
+          {
+            "Selected": false,
+            "Term": "**** Clearance ****",
+            "Count": 19
+          },
+          {
+            "Selected": false,
+            "Term": "Hoop",
+            "Count": 15
+          },
+          {
+            "Selected": false,
+            "Term": "Flat Curb Link Chain",
+            "Count": 15
+          },
+          {
+            "Selected": false,
+            "Term": "50cm",
+            "Count": 15
+          },
+          {
+            "Selected": false,
+            "Term": "Heart Locket",
+            "Count": 14
+          },
+          {
+            "Selected": false,
+            "Term": "Diamond Cluster",
+            "Count": 14
+          },
+          {
+            "Selected": false,
+            "Term": "Wedder",
+            "Count": 13
+          },
+          {
+            "Selected": false,
+            "Term": "Figaro",
+            "Count": 13
+          },
+          {
+            "Selected": false,
+            "Term": "Cross",
+            "Count": 13
+          },
+          {
+            "Selected": false,
+            "Term": "Cluster",
+            "Count": 13
+          },
+          {
+            "Selected": false,
+            "Term": "9K Gold Diamond Ring",
+            "Count": 13
+          },
+          {
+            "Selected": false,
+            "Term": "Pearl",
+            "Count": 12
+          },
+          {
+            "Selected": false,
+            "Term": "55cm",
+            "Count": 12
+          },
+          {
+            "Selected": false,
+            "Term": "Unoaerre",
+            "Count": 11
+          },
+          {
+            "Selected": false,
+            "Term": "Signet",
+            "Count": 11
+          },
+          {
+            "Selected": false,
+            "Term": "Belcher",
+            "Count": 11
+          }
+        ]
+      },
+      {
+        "Name": "Main Pendant Shape",
+        "GroupName": "Main Pendant Shape",
+        "Count": 359,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Heart",
+            "Count": 350
+          },
+          {
+            "Selected": false,
+            "Term": "Cross",
+            "Count": 179
+          },
+          {
+            "Selected": false,
+            "Term": "Oval",
+            "Count": 55
+          },
+          {
+            "Selected": false,
+            "Term": "Circle",
+            "Count": 49
+          },
+          {
+            "Selected": false,
+            "Term": "Drop",
+            "Count": 45
+          },
+          {
+            "Selected": false,
+            "Term": "Crucifix",
+            "Count": 29
+          },
+          {
+            "Selected": false,
+            "Term": "Round",
+            "Count": 27
+          },
+          {
+            "Selected": false,
+            "Term": "Tree Of Life",
+            "Count": 19
+          },
+          {
+            "Selected": false,
+            "Term": "Pearl",
+            "Count": 19
+          },
+          {
+            "Selected": false,
+            "Term": "Key",
+            "Count": 17
+          },
+          {
+            "Selected": false,
+            "Term": "Tear Drop",
+            "Count": 14
+          },
+          {
+            "Selected": false,
+            "Term": "Dragon",
+            "Count": 14
+          },
+          {
+            "Selected": false,
+            "Term": "Teardrop",
+            "Count": 12
+          },
+          {
+            "Selected": false,
+            "Term": "Square",
+            "Count": 12
+          },
+          {
+            "Selected": false,
+            "Term": "Rectangle",
+            "Count": 12
+          },
+          {
+            "Selected": false,
+            "Term": "Butterfly",
+            "Count": 12
+          },
+          {
+            "Selected": false,
+            "Term": "Pear",
+            "Count": 11
+          },
+          {
+            "Selected": false,
+            "Term": "Dolphin",
+            "Count": 11
+          },
+          {
+            "Selected": false,
+            "Term": "Tree",
+            "Count": 9
+          },
+          {
+            "Selected": false,
+            "Term": "St Christopher",
+            "Count": 9
+          },
+          {
+            "Selected": false,
+            "Term": "Elephant",
+            "Count": 9
+          },
+          {
+            "Selected": false,
+            "Term": "Locket",
+            "Count": 8
+          },
+          {
+            "Selected": false,
+            "Term": "Infinity",
+            "Count": 8
+          },
+          {
+            "Selected": false,
+            "Term": "Flower",
+            "Count": 8
+          },
+          {
+            "Selected": false,
+            "Term": "Turtle",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "Owl",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "M",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "Curb",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "Bar",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "21",
+            "Count": 6
+          }
+        ]
+      },
+      {
+        "Name": "Hero Stone Carats",
+        "GroupName": "Hero Stone Carats",
+        "Count": 165,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "1",
+            "Count": 21
+          },
+          {
+            "Selected": false,
+            "Term": "0.5",
+            "Count": 20
+          },
+          {
+            "Selected": false,
+            "Term": "0.25",
+            "Count": 18
+          },
+          {
+            "Selected": false,
+            "Term": "0.2",
+            "Count": 17
+          },
+          {
+            "Selected": false,
+            "Term": "0.01",
+            "Count": 15
+          },
+          {
+            "Selected": false,
+            "Term": "0.3",
+            "Count": 14
+          },
+          {
+            "Selected": false,
+            "Term": "0.03",
+            "Count": 11
+          },
+          {
+            "Selected": false,
+            "Term": "0.15",
+            "Count": 10
+          },
+          {
+            "Selected": false,
+            "Term": "0.18",
+            "Count": 9
+          },
+          {
+            "Selected": false,
+            "Term": "0.12",
+            "Count": 9
+          },
+          {
+            "Selected": false,
+            "Term": "0.02",
+            "Count": 9
+          },
+          {
+            "Selected": false,
+            "Term": "0.75",
+            "Count": 8
+          },
+          {
+            "Selected": false,
+            "Term": "0.52",
+            "Count": 8
+          },
+          {
+            "Selected": false,
+            "Term": "0.27",
+            "Count": 8
+          },
+          {
+            "Selected": false,
+            "Term": "2",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "0.45",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "0.4",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "0.33",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "0.26",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "0.17",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "0.11",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "0.05",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "0.54",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "0.48",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "0.21",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "0.16",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "1.2",
+            "Count": 5
+          },
+          {
+            "Selected": false,
+            "Term": "0.6",
+            "Count": 5
+          },
+          {
+            "Selected": false,
+            "Term": "0.57",
+            "Count": 5
+          },
+          {
+            "Selected": false,
+            "Term": "0.49",
+            "Count": 5
+          }
+        ]
+      }
+    ],
+    "FilterFacetList": [
+      {
+        "Count": 8043,
+        "Name": "Is on sale"
+      },
+      {
+        "Count": 0,
+        "Name": "Luxury"
+      },
+      {
+        "Count": 21290,
+        "Name": "Has pictures"
+      },
+      {
+        "Count": 2876,
+        "Name": "Has valuation certificate"
+      },
+      {
+        "Count": 9,
+        "Name": "Has authenticity certificate"
+      }
+    ],
+    "ProductList": {
+      "ProductListItemCount": 21725,
+      "ProductListItems": [
+        {
+          "Code": "023201114951",
+          "Title": "9ct Yellow Gold Gold Coin 12.67G",
+          "ImageUrl": "/globalassets/Catalogs/28cc4578-47ba-402a-94cd-b441002d11c6.jpg",
+          "Rrp": "1800.00",
+          "Sp": "1750.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/other/gold-coin/023201114951",
+          "Category": "Gold Coin",
+          "StoreNameWithState": "Salisbury, SA",
+          "ShippingLabel": "Free Postage",
+          "ShippingCost": "0.00",
+          "Promotion": null,
+          "ItemType": "Gold Coin",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/28cc4578-47ba-402a-94cd-b441002d11c6.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "000600404819",
+          "Title": "9ct Yellow Gold Anklet",
+          "ImageUrl": "/globalassets/Catalogs/4a77485a-7b6c-46b3-9226-b4630034e694.jpg",
+          "Rrp": "529.00",
+          "Sp": "459.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/anklets/anklet/000600404819",
+          "Category": "Anklet",
+          "StoreNameWithState": "Armadale, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "18.70",
+          "Promotion": null,
+          "ItemType": "Anklet",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/4a77485a-7b6c-46b3-9226-b4630034e694.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "024900269096",
+          "Title": "9ct Yellow Gold Anklet",
+          "ImageUrl": "/globalassets/Catalogs/3df3df74-2af3-4b60-ac09-b498004ee4be.jpg",
+          "Rrp": "669.00",
+          "Sp": "669.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/anklets/anklet/024900269096",
+          "Category": "Anklet",
+          "StoreNameWithState": "Rockingham, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "22.70",
+          "Promotion": null,
+          "ItemType": "Anklet",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/3df3df74-2af3-4b60-ac09-b498004ee4be.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "002100498653",
+          "Title": "9ct 9ct Yellow Gold Bangle - 8.99G",
+          "ImageUrl": "/globalassets/Catalogs/b01da75e-48be-463a-acdb-b4c9000e2f16.jpg",
+          "Rrp": "1259.00",
+          "Sp": "1259.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/bracelets-bangles/bangle/002100498653",
+          "Category": "Bangle",
+          "StoreNameWithState": "Shepparton, VIC",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "28.70",
+          "Promotion": null,
+          "ItemType": "Bangle",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/b01da75e-48be-463a-acdb-b4c9000e2f16.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "014400023192",
+          "Title": "9ct Yellow Gold Pendant 2.3G",
+          "ImageUrl": "/globalassets/Catalogs/b69d9f29-d442-45e3-b3d3-b4890082c21a.jpg",
+          "Rrp": "279.00",
+          "Sp": "279.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/014400023192",
+          "Category": "Pendant",
+          "StoreNameWithState": "Perth City Buys & Loans Centre, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "14.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/b69d9f29-d442-45e3-b3d3-b4890082c21a.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "001000326755",
+          "Title": "9ct Yellow Gold Pendant 1.49G",
+          "ImageUrl": "/globalassets/Catalogs/7e5842ea-2fc4-4ca9-9191-b4c9008a52f3.jpg",
+          "Rrp": "209.00",
+          "Sp": "209.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/001000326755",
+          "Category": "Pendant",
+          "StoreNameWithState": "Northlands, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "18.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/7e5842ea-2fc4-4ca9-9191-b4c9008a52f3.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "001000326754",
+          "Title": "9ct Yellow Gold Pendant 1G",
+          "ImageUrl": "/globalassets/Catalogs/29eeceaa-6767-4155-abb3-b4c9008a3d04.jpg",
+          "Rrp": "149.00",
+          "Sp": "149.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/001000326754",
+          "Category": "Pendant",
+          "StoreNameWithState": "Northlands, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "18.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/29eeceaa-6767-4155-abb3-b4c9008a3d04.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "015000228174",
+          "Title": "9ct Yellow Gold Pendant 0.95G",
+          "ImageUrl": "/globalassets/Catalogs/e79f4f7f-59ba-45c1-a8c8-b4a70032465d.jpg",
+          "Rrp": "139.00",
+          "Sp": "139.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/015000228174",
+          "Category": "Pendant",
+          "StoreNameWithState": "Fremantle, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "14.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/e79f4f7f-59ba-45c1-a8c8-b4a70032465d.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "000800316234",
+          "Title": "9ct Yellow Gold Pendant 1G",
+          "ImageUrl": "/globalassets/Catalogs/c27ca2f2-2855-4f38-bf6c-b49b00605074.jpg",
+          "Rrp": "249.00",
+          "Sp": "249.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/000800316234",
+          "Category": "Pendant",
+          "StoreNameWithState": "Fremantle, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "14.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/c27ca2f2-2855-4f38-bf6c-b49b00605074.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "043700543861",
+          "Title": "9ct Yellow Gold Pendant 1.84G",
+          "ImageUrl": "/globalassets/Catalogs/a4c5bd38-53f6-4a6f-9455-b4c9004d796d.jpg",
+          "Rrp": "249.00",
+          "Sp": "249.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/043700543861",
+          "Category": "Pendant",
+          "StoreNameWithState": "Modbury, SA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "17.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/a4c5bd38-53f6-4a6f-9455-b4c9004d796d.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "000300288567",
+          "Title": "9ct Yellow Gold Pendant 0.54G",
+          "ImageUrl": "/globalassets/Catalogs/fa5775c8-6303-47fe-8daf-b4c9004b915d.jpg",
+          "Rrp": "99.00",
+          "Sp": "99.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/000300288567",
+          "Category": "Pendant",
+          "StoreNameWithState": "Gosnells, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "11.25",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/fa5775c8-6303-47fe-8daf-b4c9004b915d.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "015000226266",
+          "Title": "9ct Yellow Gold Pendant 1.07G",
+          "ImageUrl": "/globalassets/Catalogs/80abb01c-cde7-4c36-9a34-b48400262ce0.jpg",
+          "Rrp": "149.00",
+          "Sp": "149.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/015000226266",
+          "Category": "Pendant",
+          "StoreNameWithState": "Fremantle, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "14.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/80abb01c-cde7-4c36-9a34-b48400262ce0.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "017100266737",
+          "Title": "9ct Yellow Gold Pendant 0.85G",
+          "ImageUrl": "/globalassets/Catalogs/b784ee13-6121-496a-a262-b4c9004ad67d.jpg",
+          "Rrp": "125.00",
+          "Sp": "120.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/017100266737",
+          "Category": "Pendant",
+          "StoreNameWithState": "Gosnells, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "14.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/b784ee13-6121-496a-a262-b4c9004ad67d.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "033800465431",
+          "Title": "9ct White Gold Pendant 1.5G",
+          "ImageUrl": "/globalassets/Catalogs/f7caccd8-9113-4c3a-be41-b42c002c119a.jpg",
+          "Rrp": "214.00",
+          "Sp": "145.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/033800465431",
+          "Category": "Pendant",
+          "StoreNameWithState": "Mt Druitt, NSW",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "14.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/f7caccd8-9113-4c3a-be41-b42c002c119a.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "033800465426",
+          "Title": "9ct Yellow Gold Pendant 1.77G",
+          "ImageUrl": "/globalassets/Catalogs/3dcace55-c5ad-4063-bfed-b430001cdeb9.jpg",
+          "Rrp": "259.00",
+          "Sp": "175.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/033800465426",
+          "Category": "Pendant",
+          "StoreNameWithState": "Mt Druitt, NSW",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "15.70",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/3dcace55-c5ad-4063-bfed-b430001cdeb9.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "017100271437",
+          "Title": "9ct Yellow Gold Pendant 1.73G",
+          "ImageUrl": "/globalassets/Catalogs/33aa62e2-699a-4ca3-bcf5-b4c90049ce96.jpg",
+          "Rrp": "250.00",
+          "Sp": "250.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/017100271437",
+          "Category": "Pendant",
+          "StoreNameWithState": "Gosnells, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "14.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/33aa62e2-699a-4ca3-bcf5-b4c90049ce96.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "033800464974",
+          "Title": "9ct Yellow Gold Pendant 2.87G",
+          "ImageUrl": "/globalassets/Catalogs/68a2aed2-5190-4129-8be4-b42c002e6455.jpg",
+          "Rrp": "404.00",
+          "Sp": "280.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/033800464974",
+          "Category": "Pendant",
+          "StoreNameWithState": "Mt Druitt, NSW",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "17.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/68a2aed2-5190-4129-8be4-b42c002e6455.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "017100267556",
+          "Title": "9ct Yellow Gold Pendant 0.95G",
+          "ImageUrl": "/globalassets/Catalogs/55eafca8-3bfb-4372-bdbc-b4c90048b887.jpg",
+          "Rrp": "140.00",
+          "Sp": "139.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/017100267556",
+          "Category": "Pendant",
+          "StoreNameWithState": "Gosnells, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "14.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/55eafca8-3bfb-4372-bdbc-b4c90048b887.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "040800443212",
+          "Title": "9ct Yellow Gold Pendant 1.46G",
+          "ImageUrl": "/globalassets/Catalogs/d337455d-7944-4ea8-9c03-b4a200683f46.jpg",
+          "Rrp": "210.00",
+          "Sp": "210.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/040800443212",
+          "Category": "Pendant",
+          "StoreNameWithState": "Ballarat, VIC",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "20.00",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/d337455d-7944-4ea8-9c03-b4a200683f46.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "000900295194",
+          "Title": "9ct Yellow Gold Pendant 0.55G",
+          "ImageUrl": "/globalassets/Catalogs/b19deb88-087f-47d6-a017-b433006a77ca.jpg",
+          "Rrp": "75.00",
+          "Sp": "65.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/000900295194",
+          "Category": "Pendant",
+          "StoreNameWithState": "Malaga, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "11.25",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/b19deb88-087f-47d6-a017-b433006a77ca.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "028200147610",
+          "Title": "9ct White Gold Pendant 1.55G",
+          "ImageUrl": "/globalassets/Catalogs/d525ed03-6a12-4e8d-bbde-b3fa000b252f.jpg",
+          "Rrp": "279.00",
+          "Sp": "190.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/028200147610",
+          "Category": "Pendant",
+          "StoreNameWithState": "Wagga Wagga, NSW",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "14.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/d525ed03-6a12-4e8d-bbde-b3fa000b252f.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "000600400426",
+          "Title": "9ct Yellow Gold Pendant 0.96G",
+          "ImageUrl": "/globalassets/Catalogs/86f913db-fe15-438f-84cb-b3f300786b1c.jpg",
+          "Rrp": "129.00",
+          "Sp": "89.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/000600400426",
+          "Category": "Pendant",
+          "StoreNameWithState": "Armadale, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "11.25",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/86f913db-fe15-438f-84cb-b3f300786b1c.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "000600404822",
+          "Title": "9ct Yellow Gold Pendant 1.3G",
+          "ImageUrl": "/globalassets/Catalogs/a9b98cc0-194e-4f20-a24c-b46300415958.jpg",
+          "Rrp": "189.00",
+          "Sp": "159.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/000600404822",
+          "Category": "Pendant",
+          "StoreNameWithState": "Armadale, WA",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "14.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/a9b98cc0-194e-4f20-a24c-b46300415958.jpg",
+          "HasAuthenticityCertificate": false
+        },
+        {
+          "Code": "061200000147",
+          "Title": "9ct Yellow Gold Pendant 5.27G",
+          "ImageUrl": "/globalassets/Catalogs/1a4bac5f-efeb-493f-8e30-b4c90055ec5f.jpg",
+          "Rrp": "739.00",
+          "Sp": "739.00",
+          "Condition": "0",
+          "Url": "/shop/jewellery-fashion/jewellery/charms-pendants/pendant/061200000147",
+          "Category": "Pendant",
+          "StoreNameWithState": "Melbourne City Luxe, VIC",
+          "ShippingLabel": "Postage",
+          "ShippingCost": "20.20",
+          "Promotion": null,
+          "ItemType": "Pendant",
+          "ProductList": "Jewellery",
+          "Brand": null,
+          "AbsoluteImageUrl": "https://www.cashconverters.com.au/globalassets/Catalogs/1a4bac5f-efeb-493f-8e30-b4c90055ec5f.jpg",
+          "HasAuthenticityCertificate": false
+        }
+      ]
+    },
+    "PriceRangeGroupItem": {
+      "Name": "SalePrice",
+      "GroupName": "Price range",
+      "Count": 9,
+      "Order": 0,
+      "PriceRangeFacetItems": [
+        {
+          "From": 0,
+          "To": 99999999,
+          "CustomRange": true,
+          "TotalAvailableItems": 0
+        },
+        {
+          "From": 1,
+          "To": 10,
+          "CustomRange": false,
+          "TotalAvailableItems": 0
+        },
+        {
+          "From": 10,
+          "To": 50,
+          "CustomRange": false,
+          "TotalAvailableItems": 38
+        },
+        {
+          "From": 50,
+          "To": 100,
+          "CustomRange": false,
+          "TotalAvailableItems": 526
+        },
+        {
+          "From": 100,
+          "To": 500,
+          "CustomRange": false,
+          "TotalAvailableItems": 11716
+        },
+        {
+          "From": 500,
+          "To": 1000,
+          "CustomRange": false,
+          "TotalAvailableItems": 5172
+        },
+        {
+          "From": 1001,
+          "To": 2000,
+          "CustomRange": false,
+          "TotalAvailableItems": 2668
+        },
+        {
+          "From": 2001,
+          "To": 5000,
+          "CustomRange": false,
+          "TotalAvailableItems": 1353
+        },
+        {
+          "From": 5001,
+          "To": 10000,
+          "CustomRange": false,
+          "TotalAvailableItems": 190
+        },
+        {
+          "From": 10000,
+          "To": 150000,
+          "CustomRange": false,
+          "TotalAvailableItems": 29
+        }
+      ],
+      "EnableCustomPriceRangeFilter": true
+    },
+    "StoreFacetGroupList": [
+      {
+        "Name": "ACT",
+        "GroupName": "StoreInfo.ACT",
+        "Count": 2,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Belconnen Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Tuggeranong Buys & Loans Centre",
+            "Count": 4
+          },
+          {
+            "Selected": false,
+            "Term": "Woden",
+            "Count": 237
+          }
+        ]
+      },
+      {
+        "Name": "NSW",
+        "GroupName": "StoreInfo.NSW",
+        "Count": 23,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Ashfield Buys & Loans Centre",
+            "Count": 30
+          },
+          {
+            "Selected": false,
+            "Term": "Bankstown",
+            "Count": 155
+          },
+          {
+            "Selected": false,
+            "Term": "Blacktown",
+            "Count": 311
+          },
+          {
+            "Selected": false,
+            "Term": "Bondi Junction Luxe",
+            "Count": 64
+          },
+          {
+            "Selected": false,
+            "Term": "Broadmeadow",
+            "Count": 604
+          },
+          {
+            "Selected": false,
+            "Term": "Campbelltown",
+            "Count": 127
+          },
+          {
+            "Selected": false,
+            "Term": "Cardiff Buys & Loans Centre",
+            "Count": 23
+          },
+          {
+            "Selected": false,
+            "Term": "Corrimal Buys & Loans Centre",
+            "Count": 28
+          },
+          {
+            "Selected": false,
+            "Term": "Fairfield",
+            "Count": 261
+          },
+          {
+            "Selected": false,
+            "Term": "Gosford Buys & Loans Centre",
+            "Count": 31
+          },
+          {
+            "Selected": false,
+            "Term": "Kogarah Buys & Loans Centre",
+            "Count": 13
+          },
+          {
+            "Selected": false,
+            "Term": "Liverpool",
+            "Count": 523
+          },
+          {
+            "Selected": false,
+            "Term": "Maitland Buys & Loans Centre",
+            "Count": 44
+          },
+          {
+            "Selected": false,
+            "Term": "Mayfield Buys & Loans Centre",
+            "Count": 9
+          },
+          {
+            "Selected": false,
+            "Term": "Merrylands",
+            "Count": 76
+          },
+          {
+            "Selected": false,
+            "Term": "Mt Druitt",
+            "Count": 366
+          },
+          {
+            "Selected": false,
+            "Term": "Parramatta",
+            "Count": 354
+          },
+          {
+            "Selected": false,
+            "Term": "Penrith",
+            "Count": 309
+          },
+          {
+            "Selected": false,
+            "Term": "Port Macquarie Buys & Loans Centre",
+            "Count": 35
+          },
+          {
+            "Selected": false,
+            "Term": "Shellharbour Buys & Loans Centre",
+            "Count": 24
+          },
+          {
+            "Selected": false,
+            "Term": "Tamworth Buys & Loans Centre",
+            "Count": 31
+          },
+          {
+            "Selected": false,
+            "Term": "Wagga Wagga",
+            "Count": 390
+          },
+          {
+            "Selected": false,
+            "Term": "Warrawong Buys & Loans Centre",
+            "Count": 24
+          },
+          {
+            "Selected": false,
+            "Term": "Wollongong Buys & Loans Centre",
+            "Count": 0
+          }
+        ]
+      },
+      {
+        "Name": "NT",
+        "GroupName": "StoreInfo.NT",
+        "Count": 2,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Coconut Grove",
+            "Count": 308
+          },
+          {
+            "Selected": false,
+            "Term": "Palmerston",
+            "Count": 189
+          }
+        ]
+      },
+      {
+        "Name": "QLD",
+        "GroupName": "StoreInfo.QLD",
+        "Count": 40,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Acacia Ridge Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Ashgrove Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Aspley Buys & Loans Centre",
+            "Count": 36
+          },
+          {
+            "Selected": false,
+            "Term": "Beenleigh",
+            "Count": 165
+          },
+          {
+            "Selected": false,
+            "Term": "Brisbane City Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Broadbeach",
+            "Count": 208
+          },
+          {
+            "Selected": false,
+            "Term": "Browns Plains",
+            "Count": 146
+          },
+          {
+            "Selected": false,
+            "Term": "Bundaberg",
+            "Count": 274
+          },
+          {
+            "Selected": false,
+            "Term": "Burpengary Buys & Loans Centre",
+            "Count": 18
+          },
+          {
+            "Selected": false,
+            "Term": "Cairns",
+            "Count": 285
+          },
+          {
+            "Selected": false,
+            "Term": "Caloundra Buys & Loans Centre",
+            "Count": 18
+          },
+          {
+            "Selected": false,
+            "Term": "Capalaba",
+            "Count": 205
+          },
+          {
+            "Selected": false,
+            "Term": "Coolangatta Buys & Loans Centre",
+            "Count": 96
+          },
+          {
+            "Selected": false,
+            "Term": "Coomera Buys & Loans Centre",
+            "Count": 14
+          },
+          {
+            "Selected": false,
+            "Term": "Deception Bay Buys & Loans Centre",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "Fortitude Valley Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Gladstone Buys & Loans Centre",
+            "Count": 15
+          },
+          {
+            "Selected": false,
+            "Term": "Goodna",
+            "Count": 379
+          },
+          {
+            "Selected": false,
+            "Term": "Hervey Bay Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Inala Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Ipswich",
+            "Count": 626
+          },
+          {
+            "Selected": false,
+            "Term": "Kallangur Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Keperra Buys & Loans Centre",
+            "Count": 70
+          },
+          {
+            "Selected": false,
+            "Term": "Logan Central",
+            "Count": 192
+          },
+          {
+            "Selected": false,
+            "Term": "Loganholme Buys & Loans Centre",
+            "Count": 20
+          },
+          {
+            "Selected": false,
+            "Term": "Mackay Buys & Loans Centre",
+            "Count": 15
+          },
+          {
+            "Selected": false,
+            "Term": "Maroochydore",
+            "Count": 643
+          },
+          {
+            "Selected": false,
+            "Term": "Morayfield",
+            "Count": 761
+          },
+          {
+            "Selected": false,
+            "Term": "Morningside Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Mt Gravatt Buys & Loans Centre",
+            "Count": 16
+          },
+          {
+            "Selected": false,
+            "Term": "Nambour Buys & Loans Centre",
+            "Count": 6
+          },
+          {
+            "Selected": false,
+            "Term": "Noosa Buys & Loans Centre",
+            "Count": 2
+          },
+          {
+            "Selected": false,
+            "Term": "Palm Beach Buys & Loans Centre",
+            "Count": 7
+          },
+          {
+            "Selected": false,
+            "Term": "Redcliffe Buys & Loans Centre",
+            "Count": 20
+          },
+          {
+            "Selected": false,
+            "Term": "Robina",
+            "Count": 126
+          },
+          {
+            "Selected": false,
+            "Term": "Rockhampton",
+            "Count": 11
+          },
+          {
+            "Selected": false,
+            "Term": "Runaway Bay",
+            "Count": 270
+          },
+          {
+            "Selected": false,
+            "Term": "Southport Buys & Loans Centre",
+            "Count": 12
+          },
+          {
+            "Selected": false,
+            "Term": "Stafford Buys & Loans Centre",
+            "Count": 2
+          },
+          {
+            "Selected": false,
+            "Term": "Stones Corner",
+            "Count": 120
+          },
+          {
+            "Selected": false,
+            "Term": "Strathpine Buys & Loans Centre",
+            "Count": 9
+          },
+          {
+            "Selected": false,
+            "Term": "Thuringowa Buys & Loans Centre",
+            "Count": 3
+          },
+          {
+            "Selected": false,
+            "Term": "Toowoomba",
+            "Count": 542
+          },
+          {
+            "Selected": false,
+            "Term": "Townsville",
+            "Count": 402
+          },
+          {
+            "Selected": false,
+            "Term": "Victoria Point Buys & Loans Centre",
+            "Count": 4
+          },
+          {
+            "Selected": false,
+            "Term": "Virginia",
+            "Count": 112
+          },
+          {
+            "Selected": false,
+            "Term": "Wynnum Buys & Loans Centre",
+            "Count": 9
+          },
+          {
+            "Selected": false,
+            "Term": "Yarrabilba Buys & Loans Centre",
+            "Count": 73
+          }
+        ]
+      },
+      {
+        "Name": "SA",
+        "GroupName": "StoreInfo.SA",
+        "Count": 17,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Adelaide City Luxe",
+            "Count": 88
+          },
+          {
+            "Selected": false,
+            "Term": "Christies Beach",
+            "Count": 259
+          },
+          {
+            "Selected": false,
+            "Term": "Clovelly Park",
+            "Count": 315
+          },
+          {
+            "Selected": false,
+            "Term": "Elizabeth",
+            "Count": 205
+          },
+          {
+            "Selected": false,
+            "Term": "Gawler",
+            "Count": 237
+          },
+          {
+            "Selected": false,
+            "Term": "Glynde",
+            "Count": 193
+          },
+          {
+            "Selected": false,
+            "Term": "Hampstead Gardens",
+            "Count": 241
+          },
+          {
+            "Selected": false,
+            "Term": "Ingle Farm",
+            "Count": 150
+          },
+          {
+            "Selected": false,
+            "Term": "Kilkenny",
+            "Count": 183
+          },
+          {
+            "Selected": false,
+            "Term": "Modbury",
+            "Count": 227
+          },
+          {
+            "Selected": false,
+            "Term": "Morphett Vale",
+            "Count": 154
+          },
+          {
+            "Selected": false,
+            "Term": "Munno Para",
+            "Count": 180
+          },
+          {
+            "Selected": false,
+            "Term": "Murray Bridge",
+            "Count": 179
+          },
+          {
+            "Selected": false,
+            "Term": "Port Adelaide",
+            "Count": 237
+          },
+          {
+            "Selected": false,
+            "Term": "Prospect",
+            "Count": 221
+          },
+          {
+            "Selected": false,
+            "Term": "Salisbury",
+            "Count": 216
+          },
+          {
+            "Selected": false,
+            "Term": "Torrensville",
+            "Count": 184
+          }
+        ]
+      },
+      {
+        "Name": "TAS",
+        "GroupName": "StoreInfo.TAS",
+        "Count": 3,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Kings Meadows",
+            "Count": 180
+          },
+          {
+            "Selected": false,
+            "Term": "Moonah",
+            "Count": 309
+          },
+          {
+            "Selected": false,
+            "Term": "Rosny Buys & Loans Centre",
+            "Count": 4
+          }
+        ]
+      },
+      {
+        "Name": "VIC",
+        "GroupName": "StoreInfo.VIC",
+        "Count": 24,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Ballarat",
+            "Count": 274
+          },
+          {
+            "Selected": false,
+            "Term": "Bendigo",
+            "Count": 93
+          },
+          {
+            "Selected": false,
+            "Term": "Cheltenham Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Coburg",
+            "Count": 62
+          },
+          {
+            "Selected": false,
+            "Term": "Collingwood",
+            "Count": 60
+          },
+          {
+            "Selected": false,
+            "Term": "Corio Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Craigieburn",
+            "Count": 190
+          },
+          {
+            "Selected": false,
+            "Term": "Cranbourne Buys & Loans Centre",
+            "Count": 114
+          },
+          {
+            "Selected": false,
+            "Term": "Croydon",
+            "Count": 129
+          },
+          {
+            "Selected": false,
+            "Term": "Dandenong",
+            "Count": 135
+          },
+          {
+            "Selected": false,
+            "Term": "Fountain Gate",
+            "Count": 172
+          },
+          {
+            "Selected": false,
+            "Term": "Frankston",
+            "Count": 180
+          },
+          {
+            "Selected": false,
+            "Term": "Geelong",
+            "Count": 145
+          },
+          {
+            "Selected": false,
+            "Term": "Glen Waverley",
+            "Count": 119
+          },
+          {
+            "Selected": false,
+            "Term": "Glenroy",
+            "Count": 215
+          },
+          {
+            "Selected": false,
+            "Term": "Greensborough Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Heidelberg Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Knox Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Melbourne City",
+            "Count": 88
+          },
+          {
+            "Selected": false,
+            "Term": "Melbourne City Luxe",
+            "Count": 58
+          },
+          {
+            "Selected": false,
+            "Term": "Melton Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Mildura Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Moonee Ponds",
+            "Count": 86
+          },
+          {
+            "Selected": false,
+            "Term": "Morwell Buys & Loans Centre",
+            "Count": 43
+          },
+          {
+            "Selected": false,
+            "Term": "Pakenham Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Prahran",
+            "Count": 68
+          },
+          {
+            "Selected": false,
+            "Term": "Preston",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Ringwood",
+            "Count": 148
+          },
+          {
+            "Selected": false,
+            "Term": "Shepparton",
+            "Count": 185
+          },
+          {
+            "Selected": false,
+            "Term": "South Melbourne",
+            "Count": 108
+          },
+          {
+            "Selected": false,
+            "Term": "Sunbury Buys & Loans Centre",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Sunshine",
+            "Count": 175
+          },
+          {
+            "Selected": false,
+            "Term": "Werribee",
+            "Count": 145
+          },
+          {
+            "Selected": false,
+            "Term": "Wodonga Buys & Loans Centre",
+            "Count": 43
+          }
+        ]
+      },
+      {
+        "Name": "WA",
+        "GroupName": "StoreInfo.WA",
+        "Count": 22,
+        "FacetItems": [
+          {
+            "Selected": false,
+            "Term": "Armadale",
+            "Count": 224
+          },
+          {
+            "Selected": false,
+            "Term": "Baldivis",
+            "Count": 215
+          },
+          {
+            "Selected": false,
+            "Term": "Belmont",
+            "Count": 436
+          },
+          {
+            "Selected": false,
+            "Term": "Bunbury",
+            "Count": 385
+          },
+          {
+            "Selected": false,
+            "Term": "Cannington - Permanently Closed",
+            "Count": 0
+          },
+          {
+            "Selected": false,
+            "Term": "Clarkson Buys & Loans Centre",
+            "Count": 81
+          },
+          {
+            "Selected": false,
+            "Term": "Ellenbrook",
+            "Count": 81
+          },
+          {
+            "Selected": false,
+            "Term": "Fremantle",
+            "Count": 206
+          },
+          {
+            "Selected": false,
+            "Term": "Gosnells",
+            "Count": 233
+          },
+          {
+            "Selected": false,
+            "Term": "Greenwood Buys & Loans Centre",
+            "Count": 21
+          },
+          {
+            "Selected": false,
+            "Term": "Joondalup",
+            "Count": 528
+          },
+          {
+            "Selected": false,
+            "Term": "Malaga",
+            "Count": 279
+          },
+          {
+            "Selected": false,
+            "Term": "Mandurah",
+            "Count": 452
+          },
+          {
+            "Selected": false,
+            "Term": "Midland",
+            "Count": 151
+          },
+          {
+            "Selected": false,
+            "Term": "Morley",
+            "Count": 133
+          },
+          {
+            "Selected": false,
+            "Term": "Northlands",
+            "Count": 249
+          },
+          {
+            "Selected": false,
+            "Term": "Osborne Park Buys & Loans Centre",
+            "Count": 42
+          },
+          {
+            "Selected": false,
+            "Term": "Perth City Buys & Loans Centre",
+            "Count": 21
+          },
+          {
+            "Selected": false,
+            "Term": "Perth City Luxe",
+            "Count": 131
+          },
+          {
+            "Selected": false,
+            "Term": "Phoenix Park Buys & Loans Centre",
+            "Count": 4
+          },
+          {
+            "Selected": false,
+            "Term": "Port Kennedy Buys & Loans Centre",
+            "Count": 9
+          },
+          {
+            "Selected": false,
+            "Term": "Rockingham",
+            "Count": 284
+          },
+          {
+            "Selected": false,
+            "Term": "Victoria Park",
+            "Count": 55
+          }
+        ]
+      }
+    ],
+    "SortOptions": [
+      {
+        "Name": "Best match",
+        "Option": "Default",
+        "Order": 0
+      },
+      {
+        "Name": "Newest listed",
+        "Option": "newest",
+        "Order": 1
+      },
+      {
+        "Name": "Price lowest",
+        "Option": "price",
+        "Order": 2
+      },
+      {
+        "Name": "Price highest",
+        "Option": "price,desc",
+        "Order": 3
+      },
+      {
+        "Name": "Title A-Z",
+        "Option": "name",
+        "Order": 4
+      },
+      {
+        "Name": "Title Z-A",
+        "Option": "name,desc",
+        "Order": 5
+      },
+      {
+        "Name": "Condition high",
+        "Option": "condition,desc",
+        "Order": 6
+      },
+      {
+        "Name": "Markdown high",
+        "Option": "markdown,desc",
+        "Order": 7
+      }
+    ],
+    "ContentListResults": {
+      "ContentListItemCount": 0,
+      "ContentListItems": []
+    },
+    "CategoryFacetGroupList": [
+      {
+        "Term": "Jewellery & Fashion|1073741825",
+        "Count": 21725,
+        "FacetItems": [
+          {
+            "Term": "Jewellery|1073741826",
+            "Count": 21725,
+            "FacetItems": [
+              {
+                "Term": "Rings|1073741842",
+                "Count": 12333,
+                "FacetItems": [
+                  {
+                    "Term": "Ring|1073741843",
+                    "Count": 12333,
+                    "FacetItems": null
+                  }
+                ]
+              },
+              {
+                "Term": "Charms & Pendants|1073741839",
+                "Count": 2998,
+                "FacetItems": [
+                  {
+                    "Term": "Pendant|1073741841",
+                    "Count": 2935,
+                    "FacetItems": null
+                  },
+                  {
+                    "Term": "Charm|1073741840",
+                    "Count": 63,
+                    "FacetItems": null
+                  }
+                ]
+              },
+              {
+                "Term": "Necklace & Chain|1073741834",
+                "Count": 2501,
+                "FacetItems": [
+                  {
+                    "Term": "Necklace|1073741835",
+                    "Count": 1908,
+                    "FacetItems": null
+                  },
+                  {
+                    "Term": "Chain|1073741836",
+                    "Count": 593,
+                    "FacetItems": null
+                  }
+                ]
+              },
+              {
+                "Term": "Earrings|1073741837",
+                "Count": 1979,
+                "FacetItems": [
+                  {
+                    "Term": "Earring|1073741838",
+                    "Count": 1979,
+                    "FacetItems": null
+                  }
+                ]
+              },
+              {
+                "Term": "Bracelets & Bangles|1073741829",
+                "Count": 1827,
+                "FacetItems": [
+                  {
+                    "Term": "Bracelet|1073741830",
+                    "Count": 1498,
+                    "FacetItems": null
+                  },
+                  {
+                    "Term": "Bangle|1073741831",
+                    "Count": 329,
+                    "FacetItems": null
+                  }
+                ]
+              },
+              {
+                "Term": "Brooch|1073741832",
+                "Count": 50,
+                "FacetItems": [
+                  {
+                    "Term": "Brooch|1073741833",
+                    "Count": 50,
+                    "FacetItems": null
+                  }
+                ]
+              },
+              {
+                "Term": "Anklets|1073741827",
+                "Count": 24,
+                "FacetItems": [
+                  {
+                    "Term": "Anklet|1073741828",
+                    "Count": 24,
+                    "FacetItems": null
+                  }
+                ]
+              },
+              {
+                "Term": "Other|1073741844",
+                "Count": 13,
+                "FacetItems": [
+                  {
+                    "Term": "Cufflinks|1073743630",
+                    "Count": 8,
+                    "FacetItems": null
+                  },
+                  {
+                    "Term": "Topaz - Loose|1073741856",
+                    "Count": 1,
+                    "FacetItems": null
+                  },
+                  {
+                    "Term": "Scrap Precious Metal|1073741848",
+                    "Count": 1,
+                    "FacetItems": null
+                  },
+                  {
+                    "Term": "Quartz - Loose|1073741859",
+                    "Count": 1,
+                    "FacetItems": null
+                  },
+                  {
+                    "Term": "Pearl - Loose|1073741858",
+                    "Count": 1,
+                    "FacetItems": null
+                  },
+                  {
+                    "Term": "Gold Coin|1073741846",
+                    "Count": 1,
+                    "FacetItems": null
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "SearchPills": [
+      {
+        "DisplayName": "Rings",
+        "Category": "1073741842",
+        "Url": null
+      },
+      {
+        "DisplayName": "Pendant",
+        "Category": "1073741841",
+        "Url": null
+      },
+      {
+        "DisplayName": "Charms & Pendants",
+        "Category": "1073741839",
+        "Url": null
+      },
+      {
+        "DisplayName": "Necklace",
+        "Category": "1073741835",
+        "Url": null
+      },
+      {
+        "DisplayName": "Necklace & Chain",
+        "Category": "1073741834",
+        "Url": null
+      },
+      {
+        "DisplayName": "Bracelet",
+        "Category": "1073741830",
+        "Url": null
+      },
+      {
+        "DisplayName": "Earrings",
+        "Category": "1073741837",
+        "Url": null
+      },
+      {
+        "DisplayName": "Bracelets & Bangles",
+        "Category": "1073741829",
+        "Url": null
+      }
+    ],
+    "SearchResultPromotions": []
+  },
+  "Status": "success"
+}
