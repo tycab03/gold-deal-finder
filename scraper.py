@@ -53,12 +53,13 @@ def scrape_product(url):
     }
 
 
-product = scrape_product(URL)
+if __name__ == "__main__":
+    product = scrape_product(URL)
 
-print("\n=== CASH CONVERTERS PRODUCT ===")
-print(f"Title:       {product['title']}")
-print(f"Price:       ${product['price']:.2f}")
-print(f"Carat:       {product['carat']}ct")
-print(f"Weight:      {product['weight']:.2f}g")
-print(f"Item Number: {product['item_number']}")
-print(f"URL:         {product['url']}")
+    print("\n=== CASH CONVERTERS PRODUCT ===")
+    print(f"Title:       {product['title']}")
+    print(f"Price:       ${product['price']:.2f}")
+    print(f"Carat:       {product['carat']}ct")
+    print(f"Weight:      {product['weight']:.2f}g")
+    print(f"Item Number: {product['item_number']}")
+    print(f"URL:         {product['url']}")
