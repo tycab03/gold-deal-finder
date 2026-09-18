@@ -11,7 +11,7 @@ def get_gold_price_per_gram():
 
     data = response.json()
 
-    price_per_ounce = data["symbols"][0]["price"]
+    price_per_ounce = float(data["symbols"][0]["price"])
     price_per_gram = price_per_ounce / TROY_OUNCE_TO_GRAMS
 
     return price_per_gram
