@@ -16,3 +16,6 @@ response.raise_for_status()
 soup = BeautifulSoup(response.text, "html.parser")
 
 print(f"Page title: {soup.title.string}")
+
+print("\n--- PAGE TEXT ---")
+print(soup.get_text("\n", strip=True))
