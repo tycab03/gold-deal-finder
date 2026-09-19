@@ -80,110 +80,33 @@ def extract_weight(title):
 # ============================================================
 
 def extract_image_url(product):
-    """
-    Attempt to extract the product image URL from the
-    Cash Converters catalogue API.
-    """
 
-    possible_fields = [
-        "ImageUrl",
-        "ImageURL",
-        "Image",
-        "PrimaryImage",
-        "PrimaryImageUrl",
-        "PrimaryImageURL",
-        "Thumbnail",
-        "ThumbnailUrl",
-        "ThumbnailURL",
-        "ProductImage",
-        "ProductImageUrl",
-        "ProductImageURL",
-    ]
+    # Cash Converters gives us a complete absolute image URL.
+    image_url = product.get("AbsoluteImageUrl")
 
-    for field in possible_fields:
+    # Fall back to relative ImageUrl if required.
+    if not image_url:
+        image_url = product.get("ImageUrl")
 
-        value = product.get(field)
+    if not image_url:
+        return None
 
-        if not value:
-            continue
+    image_url = str(image_url).strip()
 
-        # -----------------------------------------------
-        # IMAGE STORED AS DICTIONARY
-        # -----------------------------------------------
+    if not image_url:
+        return None
 
-        if isinstance(value, dict):
+    if image_url.startswith("//"):
+        return "https:" + image_url
 
-            for key in [
-                "Url",
-                "URL",
-                "url",
-                "ImageUrl",
-                "ImageURL",
-                "imageUrl",
-                "Src",
-                "src",
-            ]:
+    if image_url.startswith("/"):
+        return BASE_URL + image_url
 
-                possible_url = value.get(key)
-
-                if possible_url:
-
-                    value = possible_url
-                    break
-
-        # -----------------------------------------------
-        # IMAGE STORED AS LIST
-        # -----------------------------------------------
-
-        if isinstance(value, list):
-
-            if not value:
-                continue
-
-            first_image = value[0]
-
-            if isinstance(first_image, str):
-
-                value = first_image
-
-            elif isinstance(first_image, dict):
-
-                value = (
-                    first_image.get("Url")
-                    or first_image.get("URL")
-                    or first_image.get("url")
-                    or first_image.get("ImageUrl")
-                    or first_image.get("Src")
-                    or first_image.get("src")
-                )
-
-        # -----------------------------------------------
-        # MUST NOW BE STRING
-        # -----------------------------------------------
-
-        if not isinstance(value, str):
-            continue
-
-        value = value.strip()
-
-        if not value:
-            continue
-
-        # -----------------------------------------------
-        # FIX RELATIVE URLS
-        # -----------------------------------------------
-
-        if value.startswith("//"):
-            return "https:" + value
-
-        if value.startswith("/"):
-            return BASE_URL + value
-
-        if (
-            value.startswith("http://")
-            or value.startswith("https://")
-        ):
-            return value
+    if (
+        image_url.startswith("http://")
+        or image_url.startswith("https://")
+    ):
+        return image_url
 
     return None
 
@@ -350,35 +273,25 @@ def fetch_page(
 
             if response.status_code == 429:
 
-                retry_after = (
-                    response.headers.get(
-                        "Retry-After"
-                    )
+                retry_after = response.headers.get(
+                    "Retry-After"
                 )
 
                 if (
                     retry_after
                     and retry_after.isdigit()
                 ):
-
-                    wait_time = int(
-                        retry_after
-                    )
+                    wait_time = int(retry_after)
 
                 else:
-
-                    wait_time = (
-                        attempt * 3
-                    )
+                    wait_time = attempt * 3
 
                 print(
                     f"\nPage {page} rate limited. "
                     f"Waiting {wait_time}s..."
                 )
 
-                time.sleep(
-                    wait_time
-                )
+                time.sleep(wait_time)
 
                 continue
 
@@ -388,9 +301,7 @@ def fetch_page(
 
             if response.status_code >= 500:
 
-                wait_time = (
-                    attempt * 2
-                )
+                wait_time = attempt * 2
 
                 print(
                     f"\nPage {page} server error "
@@ -398,9 +309,7 @@ def fetch_page(
                     f"Retrying in {wait_time}s..."
                 )
 
-                time.sleep(
-                    wait_time
-                )
+                time.sleep(wait_time)
 
                 continue
 
@@ -408,36 +317,24 @@ def fetch_page(
 
             data = response.json()
 
-            if not data.get(
-                "WasSuccessful"
-            ):
+            if not data.get("WasSuccessful"):
 
                 raise RuntimeError(
-                    str(
-                        data.get(
-                            "Message"
-                        )
-                    )
+                    str(data.get("Message"))
                 )
 
             product_list = (
-                data["Value"][
-                    "ProductList"
-                ]
+                data["Value"]["ProductList"]
             )
 
-            products = (
-                product_list.get(
-                    "ProductListItems",
-                    [],
-                )
+            products = product_list.get(
+                "ProductListItems",
+                [],
             )
 
-            total = (
-                product_list.get(
-                    "ProductListItemCount",
-                    0,
-                )
+            total = product_list.get(
+                "ProductListItemCount",
+                0,
             )
 
             return (
@@ -451,18 +348,14 @@ def fetch_page(
             if attempt == MAX_RETRIES:
                 raise error
 
-            wait_time = (
-                attempt * 2
-            )
+            wait_time = attempt * 2
 
             print(
                 f"\nPage {page} request failed. "
                 f"Retrying in {wait_time}s..."
             )
 
-            time.sleep(
-                wait_time
-            )
+            time.sleep(wait_time)
 
     raise RuntimeError(
         f"Page {page} failed after retries."
@@ -475,9 +368,7 @@ def fetch_page(
 
 def create_candidate(product):
 
-    code = product.get(
-        "Code"
-    )
+    code = product.get("Code")
 
     if not code:
         return None
@@ -491,18 +382,14 @@ def create_candidate(product):
     # GOLD FILTER
     # -----------------------------------------------
 
-    if not is_solid_gold_candidate(
-        title
-    ):
+    if not is_solid_gold_candidate(title):
         return None
 
     # -----------------------------------------------
     # CARAT
     # -----------------------------------------------
 
-    carat = extract_carat(
-        title
-    )
+    carat = extract_carat(title)
 
     if carat not in SUPPORTED_CARATS:
         return None
@@ -511,9 +398,7 @@ def create_candidate(product):
     # WEIGHT
     # -----------------------------------------------
 
-    weight = extract_weight(
-        title
-    )
+    weight = extract_weight(title)
 
     if (
         weight is None
@@ -536,7 +421,6 @@ def create_candidate(product):
         TypeError,
         ValueError,
     ):
-
         return None
 
     if price <= 0:
@@ -549,9 +433,7 @@ def create_candidate(product):
     try:
 
         shipping = float(
-            product.get(
-                "ShippingCost"
-            )
+            product.get("ShippingCost")
             or 0
         )
 
@@ -559,61 +441,46 @@ def create_candidate(product):
         TypeError,
         ValueError,
     ):
-
         shipping = 0.0
 
     # -----------------------------------------------
     # PRODUCT URL
     # -----------------------------------------------
 
-    url = product.get(
-        "Url"
-    )
+    url = product.get("Url")
 
     if (
         url
         and url.startswith("/")
     ):
-
-        url = (
-            BASE_URL
-            + url
-        )
+        url = BASE_URL + url
 
     # -----------------------------------------------
-    # IMAGE
+    # PRODUCT IMAGE
     # -----------------------------------------------
 
-    image_url = (
-        extract_image_url(
-            product
-        )
+    image_url = extract_image_url(
+        product
     )
 
+    # -----------------------------------------------
+    # RETURN CANDIDATE
+    # -----------------------------------------------
+
     return {
-
         "code": code,
-
         "title": title,
-
         "price": price,
-
         "shipping": shipping,
-
         "carat": carat,
-
         "weight": weight,
-
         "store": product.get(
             "StoreNameWithState"
         ),
-
         "category": product.get(
             "Category"
         ),
-
         "image_url": image_url,
-
         "url": url,
     }
 
@@ -630,16 +497,12 @@ def process_products(
     candidates = []
 
     new_products = 0
-
     rejected_non_solid = 0
-
     rejected_other = 0
 
     for product in products:
 
-        code = product.get(
-            "Code"
-        )
+        code = product.get("Code")
 
         if not code:
             continue
@@ -647,9 +510,7 @@ def process_products(
         if code in seen_codes:
             continue
 
-        seen_codes.add(
-            code
-        )
+        seen_codes.add(code)
 
         new_products += 1
 
@@ -661,21 +522,16 @@ def process_products(
         if not is_solid_gold_candidate(
             title
         ):
-
             rejected_non_solid += 1
-
             continue
 
-        candidate = (
-            create_candidate(
-                product
-            )
+        candidate = create_candidate(
+            product
         )
 
         if candidate is None:
 
             rejected_other += 1
-
             continue
 
         candidates.append(
@@ -700,11 +556,9 @@ def find_gold_candidates(
 ):
 
     candidates = []
-
     seen_codes = set()
 
     rejected_non_solid = 0
-
     rejected_other = 0
 
     print()
@@ -715,9 +569,7 @@ def find_gold_candidates(
     print("=" * 72)
 
     print()
-    print(
-        f"Search: {query}"
-    )
+    print(f"Search: {query}")
 
     print(
         f"Concurrent workers: "
@@ -823,27 +675,21 @@ def find_gold_candidates(
                 total_pages + 1,
             ):
 
-                future = (
-                    executor.submit(
-                        fetch_page,
-                        page,
-                        query,
-                        results_per_page,
-                    )
+                future = executor.submit(
+                    fetch_page,
+                    page,
+                    query,
+                    results_per_page,
                 )
 
-                futures[
-                    future
-                ] = page
+                futures[future] = page
 
             for future in as_completed(
                 futures
             ):
 
                 requested_page = (
-                    futures[
-                        future
-                    ]
+                    futures[future]
                 )
 
                 try:
@@ -938,7 +784,7 @@ def find_gold_candidates(
 
 
 # ============================================================
-# ANALYSE
+# ANALYSE PRODUCTS
 # ============================================================
 
 def analyse_products(
@@ -950,35 +796,21 @@ def analyse_products(
 
     for product in products:
 
-        carat = product[
-            "carat"
-        ]
+        carat = product["carat"]
+        weight = product["weight"]
+        price = product["price"]
+        shipping = product["shipping"]
 
-        weight = product[
-            "weight"
+        purity = SUPPORTED_CARATS[
+            carat
         ]
-
-        price = product[
-            "price"
-        ]
-
-        shipping = product[
-            "shipping"
-        ]
-
-        purity = (
-            SUPPORTED_CARATS[
-                carat
-            ]
-        )
 
         # -----------------------------------------------
         # PURE GOLD EQUIVALENT
         # -----------------------------------------------
 
         pure_gold_equivalent = (
-            weight
-            * purity
+            weight * purity
         )
 
         # -----------------------------------------------
@@ -986,8 +818,7 @@ def analyse_products(
         # -----------------------------------------------
 
         gold_value_per_gram = (
-            gold_price
-            * purity
+            gold_price * purity
         )
 
         # -----------------------------------------------
@@ -999,19 +830,15 @@ def analyse_products(
             * gold_value_per_gram
         )
 
-        if (
-            theoretical_gold_value
-            <= 0
-        ):
+        if theoretical_gold_value <= 0:
             continue
 
         # -----------------------------------------------
-        # TOTAL COST
+        # TOTAL ACQUISITION COST
         # -----------------------------------------------
 
         total_price = (
-            price
-            + shipping
+            price + shipping
         )
 
         # -----------------------------------------------
@@ -1024,7 +851,7 @@ def analyse_products(
         )
 
         # -----------------------------------------------
-        # PERCENTAGE
+        # PRICE VS GOLD %
         # -----------------------------------------------
 
         price_vs_gold_pct = (
@@ -1035,27 +862,21 @@ def analyse_products(
             - 1
         ) * 100
 
-        product[
-            "purity"
-        ] = purity
+        product["purity"] = (
+            purity
+        )
 
         product[
             "pure_gold_equivalent"
-        ] = (
-            pure_gold_equivalent
-        )
+        ] = pure_gold_equivalent
 
         product[
             "gold_value_per_gram"
-        ] = (
-            gold_value_per_gram
-        )
+        ] = gold_value_per_gram
 
         product[
             "theoretical_gold_value"
-        ] = (
-            theoretical_gold_value
-        )
+        ] = theoretical_gold_value
 
         product[
             "total_price"
@@ -1067,19 +888,16 @@ def analyse_products(
 
         product[
             "price_vs_gold_pct"
-        ] = (
-            price_vs_gold_pct
-        )
+        ] = price_vs_gold_pct
 
         analysed_products.append(
             product
         )
 
+    # Cheapest relative to gold value first
     analysed_products.sort(
         key=lambda product:
-        product[
-            "price_vs_gold_pct"
-        ]
+        product["price_vs_gold_pct"]
     )
 
     return analysed_products
@@ -1191,9 +1009,7 @@ def export_to_csv(
 
                 "total_price":
                     round(
-                        product[
-                            "total_price"
-                        ],
+                        product["total_price"],
                         2,
                     ),
 
@@ -1215,9 +1031,7 @@ def export_to_csv(
 
                 "difference":
                     round(
-                        product[
-                            "difference"
-                        ],
+                        product["difference"],
                         2,
                     ),
 
@@ -1230,15 +1044,11 @@ def export_to_csv(
                     ),
 
                 "category":
-                    product[
-                        "category"
-                    ]
+                    product["category"]
                     or "",
 
                 "store":
-                    product[
-                        "store"
-                    ]
+                    product["store"]
                     or "",
 
                 "image_url":
@@ -1248,9 +1058,7 @@ def export_to_csv(
                     or "",
 
                 "url":
-                    product[
-                        "url"
-                    ]
+                    product["url"]
                     or "",
             })
 
@@ -1263,9 +1071,7 @@ def export_to_csv(
         f"gold candidates to:"
     )
 
-    print(
-        filename
-    )
+    print(filename)
 
     print("=" * 72)
 
@@ -1313,9 +1119,7 @@ def display_results(
     )
 
     for rank, product in enumerate(
-        products[
-            :number_to_show
-        ],
+        products[:number_to_show],
         start=1,
     ):
 
@@ -1403,14 +1207,12 @@ if __name__ == "__main__":
     try:
 
         # ====================================================
-        # 1. SCAN
+        # 1. SCAN CASHIES
         # ====================================================
 
-        products = (
-            find_gold_candidates(
-                query="9ct gold",
-                results_per_page=RESULTS_PER_PAGE,
-            )
+        products = find_gold_candidates(
+            query="9ct gold",
+            results_per_page=RESULTS_PER_PAGE,
         )
 
         if not products:
@@ -1436,7 +1238,7 @@ if __name__ == "__main__":
         )
 
         print(
-            f"Current 24ct spot price: "
+            f"Gold price being used: "
             f"${gold_price:.2f} AUD/g"
         )
 
@@ -1458,7 +1260,7 @@ if __name__ == "__main__":
         )
 
         # ====================================================
-        # 4. CSV
+        # 4. EXPORT
         # ====================================================
 
         export_to_csv(
