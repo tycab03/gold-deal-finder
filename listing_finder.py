@@ -45,6 +45,7 @@ SUPPORTED_CARATS = {
 # ============================================================
 
 def extract_carat(title):
+
     match = re.search(
         r"\b(9|14|18|22|24)\s*ct\b",
         title,
@@ -62,13 +63,6 @@ def extract_carat(title):
 # ============================================================
 
 def extract_weight(title):
-    """
-    Extract the final gram weight from a listing title.
-
-    Examples:
-        9ct Yellow Gold Chain 12.5G
-        9ct Yellow Gold Bangle - 8.4G
-    """
 
     matches = re.findall(
         r"(\d+(?:\.\d+)?)\s*[gG]\b",
@@ -82,29 +76,123 @@ def extract_weight(title):
 
 
 # ============================================================
+# EXTRACT IMAGE
+# ============================================================
+
+def extract_image_url(product):
+    """
+    Attempt to extract the product image URL from the
+    Cash Converters catalogue API.
+    """
+
+    possible_fields = [
+        "ImageUrl",
+        "ImageURL",
+        "Image",
+        "PrimaryImage",
+        "PrimaryImageUrl",
+        "PrimaryImageURL",
+        "Thumbnail",
+        "ThumbnailUrl",
+        "ThumbnailURL",
+        "ProductImage",
+        "ProductImageUrl",
+        "ProductImageURL",
+    ]
+
+    for field in possible_fields:
+
+        value = product.get(field)
+
+        if not value:
+            continue
+
+        # -----------------------------------------------
+        # IMAGE STORED AS DICTIONARY
+        # -----------------------------------------------
+
+        if isinstance(value, dict):
+
+            for key in [
+                "Url",
+                "URL",
+                "url",
+                "ImageUrl",
+                "ImageURL",
+                "imageUrl",
+                "Src",
+                "src",
+            ]:
+
+                possible_url = value.get(key)
+
+                if possible_url:
+
+                    value = possible_url
+                    break
+
+        # -----------------------------------------------
+        # IMAGE STORED AS LIST
+        # -----------------------------------------------
+
+        if isinstance(value, list):
+
+            if not value:
+                continue
+
+            first_image = value[0]
+
+            if isinstance(first_image, str):
+
+                value = first_image
+
+            elif isinstance(first_image, dict):
+
+                value = (
+                    first_image.get("Url")
+                    or first_image.get("URL")
+                    or first_image.get("url")
+                    or first_image.get("ImageUrl")
+                    or first_image.get("Src")
+                    or first_image.get("src")
+                )
+
+        # -----------------------------------------------
+        # MUST NOW BE STRING
+        # -----------------------------------------------
+
+        if not isinstance(value, str):
+            continue
+
+        value = value.strip()
+
+        if not value:
+            continue
+
+        # -----------------------------------------------
+        # FIX RELATIVE URLS
+        # -----------------------------------------------
+
+        if value.startswith("//"):
+            return "https:" + value
+
+        if value.startswith("/"):
+            return BASE_URL + value
+
+        if (
+            value.startswith("http://")
+            or value.startswith("https://")
+        ):
+            return value
+
+    return None
+
+
+# ============================================================
 # CONSERVATIVE GOLD FILTER
 # ============================================================
 
 def is_solid_gold_candidate(title):
-    """
-    Reject listings where the stated gross weight should not
-    automatically be treated as gold weight.
-
-    This removes obvious:
-        - plated jewellery
-        - filled jewellery
-        - bonded jewellery
-        - vermeil
-        - rolled gold
-        - mixed/base metals
-        - pearls
-        - gemstones
-        - opals
-        - cameos
-
-    Passing this filter still does NOT guarantee that 100%
-    of the stated weight is gold.
-    """
 
     title_lower = title.lower()
 
@@ -156,7 +244,7 @@ def is_solid_gold_candidate(title):
         "gold colored",
         "gold-colored",
 
-        # Base / mixed metals
+        # Other metals
         "copper",
         "sterling silver",
         "silver and gold",
@@ -184,7 +272,7 @@ def is_solid_gold_candidate(title):
         "quartz",
         "turquoise",
 
-        # Zircon / CZ
+        # CZ
         "cubic zirconia",
         "zirconia",
         "zircon",
@@ -200,6 +288,7 @@ def is_solid_gold_candidate(title):
     ]
 
     for phrase in excluded_phrases:
+
         if phrase in title_lower:
             return False
 
@@ -214,6 +303,7 @@ def is_solid_gold_candidate(title):
     ]
 
     for pattern in excluded_patterns:
+
         if re.search(
             pattern,
             title,
@@ -225,7 +315,7 @@ def is_solid_gold_candidate(title):
 
 
 # ============================================================
-# FETCH ONE CASHIES PAGE
+# FETCH PAGE
 # ============================================================
 
 def fetch_page(
@@ -233,6 +323,7 @@ def fetch_page(
     query,
     number_of_results=RESULTS_PER_PAGE,
 ):
+
     params = {
         "query": query,
         "page": page,
@@ -243,7 +334,9 @@ def fetch_page(
         1,
         MAX_RETRIES + 1,
     ):
+
         try:
+
             response = requests.get(
                 SEARCH_ENDPOINT,
                 headers=HEADERS,
@@ -251,28 +344,53 @@ def fetch_page(
                 timeout=20,
             )
 
-            # Rate limited
+            # -----------------------------------------------
+            # RATE LIMIT
+            # -----------------------------------------------
+
             if response.status_code == 429:
-                retry_after = response.headers.get(
-                    "Retry-After"
+
+                retry_after = (
+                    response.headers.get(
+                        "Retry-After"
+                    )
                 )
 
-                if retry_after and retry_after.isdigit():
-                    wait_time = int(retry_after)
+                if (
+                    retry_after
+                    and retry_after.isdigit()
+                ):
+
+                    wait_time = int(
+                        retry_after
+                    )
+
                 else:
-                    wait_time = attempt * 3
+
+                    wait_time = (
+                        attempt * 3
+                    )
 
                 print(
                     f"\nPage {page} rate limited. "
                     f"Waiting {wait_time}s..."
                 )
 
-                time.sleep(wait_time)
+                time.sleep(
+                    wait_time
+                )
+
                 continue
 
-            # Temporary server error
+            # -----------------------------------------------
+            # SERVER ERROR
+            # -----------------------------------------------
+
             if response.status_code >= 500:
-                wait_time = attempt * 2
+
+                wait_time = (
+                    attempt * 2
+                )
 
                 print(
                     f"\nPage {page} server error "
@@ -280,47 +398,71 @@ def fetch_page(
                     f"Retrying in {wait_time}s..."
                 )
 
-                time.sleep(wait_time)
+                time.sleep(
+                    wait_time
+                )
+
                 continue
 
             response.raise_for_status()
 
             data = response.json()
 
-            if not data.get("WasSuccessful"):
+            if not data.get(
+                "WasSuccessful"
+            ):
+
                 raise RuntimeError(
-                    str(data.get("Message"))
+                    str(
+                        data.get(
+                            "Message"
+                        )
+                    )
                 )
 
             product_list = (
-                data["Value"]["ProductList"]
+                data["Value"][
+                    "ProductList"
+                ]
             )
 
-            products = product_list.get(
-                "ProductListItems",
-                [],
+            products = (
+                product_list.get(
+                    "ProductListItems",
+                    [],
+                )
             )
 
-            total = product_list.get(
-                "ProductListItemCount",
-                0,
+            total = (
+                product_list.get(
+                    "ProductListItemCount",
+                    0,
+                )
             )
 
-            return page, products, total
+            return (
+                page,
+                products,
+                total,
+            )
 
         except requests.RequestException as error:
 
             if attempt == MAX_RETRIES:
                 raise error
 
-            wait_time = attempt * 2
+            wait_time = (
+                attempt * 2
+            )
 
             print(
                 f"\nPage {page} request failed. "
                 f"Retrying in {wait_time}s..."
             )
 
-            time.sleep(wait_time)
+            time.sleep(
+                wait_time
+            )
 
     raise RuntimeError(
         f"Page {page} failed after retries."
@@ -332,7 +474,10 @@ def fetch_page(
 # ============================================================
 
 def create_candidate(product):
-    code = product.get("Code")
+
+    code = product.get(
+        "Code"
+    )
 
     if not code:
         return None
@@ -342,62 +487,133 @@ def create_candidate(product):
         "",
     )
 
-    # Conservative filter
-    if not is_solid_gold_candidate(title):
+    # -----------------------------------------------
+    # GOLD FILTER
+    # -----------------------------------------------
+
+    if not is_solid_gold_candidate(
+        title
+    ):
         return None
 
-    # Carat + weight
-    carat = extract_carat(title)
-    weight = extract_weight(title)
+    # -----------------------------------------------
+    # CARAT
+    # -----------------------------------------------
+
+    carat = extract_carat(
+        title
+    )
 
     if carat not in SUPPORTED_CARATS:
         return None
 
-    if weight is None or weight <= 0:
+    # -----------------------------------------------
+    # WEIGHT
+    # -----------------------------------------------
+
+    weight = extract_weight(
+        title
+    )
+
+    if (
+        weight is None
+        or weight <= 0
+    ):
         return None
 
-    # Price
+    # -----------------------------------------------
+    # PRICE
+    # -----------------------------------------------
+
     try:
+
         price = float(
             product.get("Sp")
             or product.get("Rrp")
         )
 
-    except (TypeError, ValueError):
+    except (
+        TypeError,
+        ValueError,
+    ):
+
         return None
 
     if price <= 0:
         return None
 
-    # Shipping
+    # -----------------------------------------------
+    # SHIPPING
+    # -----------------------------------------------
+
     try:
+
         shipping = float(
-            product.get("ShippingCost")
+            product.get(
+                "ShippingCost"
+            )
             or 0
         )
 
-    except (TypeError, ValueError):
+    except (
+        TypeError,
+        ValueError,
+    ):
+
         shipping = 0.0
 
-    # URL
-    url = product.get("Url")
+    # -----------------------------------------------
+    # PRODUCT URL
+    # -----------------------------------------------
 
-    if url and url.startswith("/"):
-        url = BASE_URL + url
+    url = product.get(
+        "Url"
+    )
+
+    if (
+        url
+        and url.startswith("/")
+    ):
+
+        url = (
+            BASE_URL
+            + url
+        )
+
+    # -----------------------------------------------
+    # IMAGE
+    # -----------------------------------------------
+
+    image_url = (
+        extract_image_url(
+            product
+        )
+    )
 
     return {
+
         "code": code,
+
         "title": title,
+
         "price": price,
+
         "shipping": shipping,
+
         "carat": carat,
+
         "weight": weight,
+
         "store": product.get(
             "StoreNameWithState"
         ),
+
         "category": product.get(
             "Category"
         ),
+
+        "image_url": image_url,
+
         "url": url,
     }
 
@@ -410,23 +626,31 @@ def process_products(
     products,
     seen_codes,
 ):
+
     candidates = []
 
     new_products = 0
+
     rejected_non_solid = 0
+
     rejected_other = 0
 
     for product in products:
-        code = product.get("Code")
+
+        code = product.get(
+            "Code"
+        )
 
         if not code:
             continue
 
-        # Dedupe
         if code in seen_codes:
             continue
 
-        seen_codes.add(code)
+        seen_codes.add(
+            code
+        )
+
         new_products += 1
 
         title = product.get(
@@ -434,19 +658,24 @@ def process_products(
             "",
         )
 
-        # Filter
         if not is_solid_gold_candidate(
             title
         ):
+
             rejected_non_solid += 1
+
             continue
 
-        candidate = create_candidate(
-            product
+        candidate = (
+            create_candidate(
+                product
+            )
         )
 
         if candidate is None:
+
             rejected_other += 1
+
             continue
 
         candidates.append(
@@ -462,32 +691,44 @@ def process_products(
 
 
 # ============================================================
-# FAST FULL CATALOGUE SCAN
+# SCAN CATALOGUE
 # ============================================================
 
 def find_gold_candidates(
     query="9ct gold",
     results_per_page=RESULTS_PER_PAGE,
 ):
+
     candidates = []
+
     seen_codes = set()
 
     rejected_non_solid = 0
+
     rejected_other = 0
 
     print()
     print("=" * 72)
-    print("                CASHIES FAST GOLD SCANNER")
+    print(
+        "                CASHIES FAST GOLD SCANNER"
+    )
     print("=" * 72)
 
     print()
-    print(f"Search: {query}")
-    print(f"Concurrent workers: {MAX_WORKERS}")
+    print(
+        f"Search: {query}"
+    )
+
+    print(
+        f"Concurrent workers: "
+        f"{MAX_WORKERS}"
+    )
 
     print()
-    print("Checking catalogue size...")
+    print(
+        "Checking catalogue size..."
+    )
 
-    # Page 1 first
     (
         _,
         first_products,
@@ -522,7 +763,10 @@ def find_gold_candidates(
 
     print()
 
-    # Process page 1
+    # ========================================================
+    # PAGE 1
+    # ========================================================
+
     (
         page_candidates,
         new_products,
@@ -556,11 +800,16 @@ def find_gold_candidates(
         f"{len(candidates):,} total"
     )
 
-    # Parallel remaining pages
+    # ========================================================
+    # REMAINING PAGES
+    # ========================================================
+
     if total_pages > 1:
 
         print()
-        print("Starting parallel scan...")
+        print(
+            "Starting parallel scan..."
+        )
         print()
 
         with ThreadPoolExecutor(
@@ -573,23 +822,32 @@ def find_gold_candidates(
                 2,
                 total_pages + 1,
             ):
-                future = executor.submit(
-                    fetch_page,
-                    page,
-                    query,
-                    results_per_page,
+
+                future = (
+                    executor.submit(
+                        fetch_page,
+                        page,
+                        query,
+                        results_per_page,
+                    )
                 )
 
-                futures[future] = page
+                futures[
+                    future
+                ] = page
 
             for future in as_completed(
                 futures
             ):
+
                 requested_page = (
-                    futures[future]
+                    futures[
+                        future
+                    ]
                 )
 
                 try:
+
                     (
                         returned_page,
                         products,
@@ -597,6 +855,7 @@ def find_gold_candidates(
                     ) = future.result()
 
                 except Exception as error:
+
                     completed_pages += 1
 
                     print(
@@ -642,10 +901,15 @@ def find_gold_candidates(
                     f"{len(candidates):,} total"
                 )
 
-    # Summary
+    # ========================================================
+    # SUMMARY
+    # ========================================================
+
     print()
     print("=" * 72)
-    print("                         SCAN SUMMARY")
+    print(
+        "                         SCAN SUMMARY"
+    )
     print("=" * 72)
 
     print(
@@ -674,59 +938,95 @@ def find_gold_candidates(
 
 
 # ============================================================
-# ANALYSE GOLD VALUE
+# ANALYSE
 # ============================================================
 
 def analyse_products(
     products,
     gold_price,
 ):
+
     analysed_products = []
 
     for product in products:
-        carat = product["carat"]
-        weight = product["weight"]
-        price = product["price"]
-        shipping = product["shipping"]
 
-        purity = SUPPORTED_CARATS[
-            carat
+        carat = product[
+            "carat"
         ]
 
-        # Pure gold equivalent
+        weight = product[
+            "weight"
+        ]
+
+        price = product[
+            "price"
+        ]
+
+        shipping = product[
+            "shipping"
+        ]
+
+        purity = (
+            SUPPORTED_CARATS[
+                carat
+            ]
+        )
+
+        # -----------------------------------------------
+        # PURE GOLD EQUIVALENT
+        # -----------------------------------------------
+
         pure_gold_equivalent = (
             weight
             * purity
         )
 
-        # Value per gram at this carat
+        # -----------------------------------------------
+        # GOLD VALUE PER GRAM
+        # -----------------------------------------------
+
         gold_value_per_gram = (
             gold_price
             * purity
         )
 
-        # Theoretical contained-gold value
+        # -----------------------------------------------
+        # THEORETICAL GOLD VALUE
+        # -----------------------------------------------
+
         theoretical_gold_value = (
             weight
             * gold_value_per_gram
         )
 
-        if theoretical_gold_value <= 0:
+        if (
+            theoretical_gold_value
+            <= 0
+        ):
             continue
 
-        # Total acquisition cost
+        # -----------------------------------------------
+        # TOTAL COST
+        # -----------------------------------------------
+
         total_price = (
             price
             + shipping
         )
 
-        # Dollar difference
+        # -----------------------------------------------
+        # DIFFERENCE
+        # -----------------------------------------------
+
         difference = (
             total_price
             - theoretical_gold_value
         )
 
-        # Percentage above/below theoretical value
+        # -----------------------------------------------
+        # PERCENTAGE
+        # -----------------------------------------------
+
         price_vs_gold_pct = (
             (
                 total_price
@@ -735,19 +1035,27 @@ def analyse_products(
             - 1
         ) * 100
 
-        product["purity"] = purity
+        product[
+            "purity"
+        ] = purity
 
         product[
             "pure_gold_equivalent"
-        ] = pure_gold_equivalent
+        ] = (
+            pure_gold_equivalent
+        )
 
         product[
             "gold_value_per_gram"
-        ] = gold_value_per_gram
+        ] = (
+            gold_value_per_gram
+        )
 
         product[
             "theoretical_gold_value"
-        ] = theoretical_gold_value
+        ] = (
+            theoretical_gold_value
+        )
 
         product[
             "total_price"
@@ -759,38 +1067,40 @@ def analyse_products(
 
         product[
             "price_vs_gold_pct"
-        ] = price_vs_gold_pct
+        ] = (
+            price_vs_gold_pct
+        )
 
         analysed_products.append(
             product
         )
 
-    # Lowest price relative to theoretical gold value first
     analysed_products.sort(
         key=lambda product:
-        product["price_vs_gold_pct"]
+        product[
+            "price_vs_gold_pct"
+        ]
     )
 
     return analysed_products
 
 
 # ============================================================
-# EXPORT ALL RESULTS TO CSV
+# EXPORT CSV
 # ============================================================
 
 def export_to_csv(
     products,
     filename=CSV_FILENAME,
 ):
-    """
-    Save all analysed candidates to CSV.
-
-    app.py will read this file to create the dashboard.
-    """
 
     if not products:
+
         print()
-        print("No products to export.")
+        print(
+            "No products to export."
+        )
+
         return
 
     fieldnames = [
@@ -810,6 +1120,7 @@ def export_to_csv(
         "price_vs_gold_pct",
         "category",
         "store",
+        "image_url",
         "url",
     ]
 
@@ -831,98 +1142,130 @@ def export_to_csv(
             products,
             start=1,
         ):
+
             writer.writerow({
-                "rank": rank,
 
-                "code": product["code"],
+                "rank":
+                    rank,
 
-                "title": product["title"],
+                "code":
+                    product["code"],
 
-                "carat": product["carat"],
+                "title":
+                    product["title"],
 
-                "weight": round(
-                    product["weight"],
-                    2,
-                ),
+                "carat":
+                    product["carat"],
 
-                "purity": round(
-                    product["purity"],
-                    4,
-                ),
+                "weight":
+                    round(
+                        product["weight"],
+                        2,
+                    ),
 
-                "pure_gold_equivalent": round(
+                "purity":
+                    round(
+                        product["purity"],
+                        4,
+                    ),
+
+                "pure_gold_equivalent":
+                    round(
+                        product[
+                            "pure_gold_equivalent"
+                        ],
+                        3,
+                    ),
+
+                "price":
+                    round(
+                        product["price"],
+                        2,
+                    ),
+
+                "shipping":
+                    round(
+                        product["shipping"],
+                        2,
+                    ),
+
+                "total_price":
+                    round(
+                        product[
+                            "total_price"
+                        ],
+                        2,
+                    ),
+
+                "gold_value_per_gram":
+                    round(
+                        product[
+                            "gold_value_per_gram"
+                        ],
+                        2,
+                    ),
+
+                "theoretical_gold_value":
+                    round(
+                        product[
+                            "theoretical_gold_value"
+                        ],
+                        2,
+                    ),
+
+                "difference":
+                    round(
+                        product[
+                            "difference"
+                        ],
+                        2,
+                    ),
+
+                "price_vs_gold_pct":
+                    round(
+                        product[
+                            "price_vs_gold_pct"
+                        ],
+                        2,
+                    ),
+
+                "category":
                     product[
-                        "pure_gold_equivalent"
-                    ],
-                    3,
-                ),
+                        "category"
+                    ]
+                    or "",
 
-                "price": round(
-                    product["price"],
-                    2,
-                ),
-
-                "shipping": round(
-                    product["shipping"],
-                    2,
-                ),
-
-                "total_price": round(
-                    product["total_price"],
-                    2,
-                ),
-
-                "gold_value_per_gram": round(
+                "store":
                     product[
-                        "gold_value_per_gram"
-                    ],
-                    2,
-                ),
+                        "store"
+                    ]
+                    or "",
 
-                "theoretical_gold_value": round(
+                "image_url":
+                    product.get(
+                        "image_url"
+                    )
+                    or "",
+
+                "url":
                     product[
-                        "theoretical_gold_value"
-                    ],
-                    2,
-                ),
-
-                "difference": round(
-                    product["difference"],
-                    2,
-                ),
-
-                "price_vs_gold_pct": round(
-                    product[
-                        "price_vs_gold_pct"
-                    ],
-                    2,
-                ),
-
-                "category": (
-                    product["category"]
-                    or ""
-                ),
-
-                "store": (
-                    product["store"]
-                    or ""
-                ),
-
-                "url": (
-                    product["url"]
-                    or ""
-                ),
+                        "url"
+                    ]
+                    or "",
             })
 
     print()
     print("=" * 72)
 
     print(
-        f"Saved {len(products):,} "
+        f"Saved "
+        f"{len(products):,} "
         f"gold candidates to:"
     )
 
-    print(filename)
+    print(
+        filename
+    )
 
     print("=" * 72)
 
@@ -936,11 +1279,13 @@ def display_results(
     gold_price,
     number_to_show=20,
 ):
-    print()
-    print()
 
+    print()
+    print()
     print("=" * 72)
-    print("                    BEST GOLD DEALS")
+    print(
+        "                    BEST GOLD DEALS"
+    )
     print("=" * 72)
 
     print()
@@ -955,21 +1300,6 @@ def display_results(
         f"${gold_price * 0.375:.2f}/g"
     )
 
-    print(
-        f"14ct Gold Value:       "
-        f"${gold_price * 0.585:.2f}/g"
-    )
-
-    print(
-        f"18ct Gold Value:       "
-        f"${gold_price * 0.750:.2f}/g"
-    )
-
-    print(
-        f"22ct Gold Value:       "
-        f"${gold_price * 0.916:.2f}/g"
-    )
-
     print()
 
     print(
@@ -982,11 +1312,13 @@ def display_results(
         f"{min(number_to_show, len(products))}"
     )
 
-    # Top results
     for rank, product in enumerate(
-        products[:number_to_show],
+        products[
+            :number_to_show
+        ],
         start=1,
     ):
+
         print()
         print("=" * 72)
 
@@ -1024,29 +1356,12 @@ def display_results(
             f"{product['carat']}ct"
         )
 
-        print(
-            f"Purity:              "
-            f"{product['purity'] * 100:.1f}%"
-        )
-
-        print(
-            f"Pure Gold Equivalent: "
-            f"{product['pure_gold_equivalent']:.2f}g"
-        )
-
         print()
-
-        print(
-            f"Gold Value / g:      "
-            f"${product['gold_value_per_gram']:.2f}"
-        )
 
         print(
             f"Theoretical Value:   "
             f"${product['theoretical_gold_value']:,.2f}"
         )
-
-        print()
 
         print(
             f"Difference:          "
@@ -1061,19 +1376,20 @@ def display_results(
         print()
 
         print(
-            f"Category:            "
-            f"{product['category']}"
-        )
-
-        print(
             f"Store:               "
             f"{product['store']}"
         )
 
+        print(
+            f"Image:               "
+            f"{product.get('image_url')}"
+        )
+
         print()
 
-        print("URL:")
-        print(product["url"])
+        print(
+            product["url"]
+        )
 
 
 # ============================================================
@@ -1086,27 +1402,29 @@ if __name__ == "__main__":
 
     try:
 
-        # ----------------------------------------------------
-        # STEP 1 - SCAN CASHIES
-        # ----------------------------------------------------
+        # ====================================================
+        # 1. SCAN
+        # ====================================================
 
-        products = find_gold_candidates(
-            query="9ct gold",
-            results_per_page=RESULTS_PER_PAGE,
+        products = (
+            find_gold_candidates(
+                query="9ct gold",
+                results_per_page=RESULTS_PER_PAGE,
+            )
         )
 
         if not products:
+
             print()
             print(
-                "No usable gold products "
-                "were found."
+                "No usable gold products found."
             )
 
             raise SystemExit
 
-        # ----------------------------------------------------
-        # STEP 2 - LIVE GOLD PRICE
-        # ----------------------------------------------------
+        # ====================================================
+        # 2. GOLD PRICE
+        # ====================================================
 
         print()
         print(
@@ -1122,9 +1440,9 @@ if __name__ == "__main__":
             f"${gold_price:.2f} AUD/g"
         )
 
-        # ----------------------------------------------------
-        # STEP 3 - ANALYSE
-        # ----------------------------------------------------
+        # ====================================================
+        # 3. ANALYSE
+        # ====================================================
 
         print()
         print(
@@ -1139,18 +1457,18 @@ if __name__ == "__main__":
             )
         )
 
-        # ----------------------------------------------------
-        # STEP 4 - EXPORT EVERYTHING TO CSV
-        # ----------------------------------------------------
+        # ====================================================
+        # 4. CSV
+        # ====================================================
 
         export_to_csv(
             analysed_products,
             filename=CSV_FILENAME,
         )
 
-        # ----------------------------------------------------
-        # STEP 5 - DISPLAY TOP 20
-        # ----------------------------------------------------
+        # ====================================================
+        # 5. DISPLAY
+        # ====================================================
 
         display_results(
             analysed_products,
@@ -1158,9 +1476,9 @@ if __name__ == "__main__":
             number_to_show=20,
         )
 
-        # ----------------------------------------------------
+        # ====================================================
         # RUNTIME
-        # ----------------------------------------------------
+        # ====================================================
 
         elapsed = (
             time.time()
@@ -1178,13 +1496,14 @@ if __name__ == "__main__":
         print("=" * 72)
 
     except KeyboardInterrupt:
-        print()
+
         print()
         print(
             "Scan cancelled by user."
         )
 
     except Exception as error:
+
         print()
         print(
             f"Fatal error: {error}"
