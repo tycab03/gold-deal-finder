@@ -21,7 +21,7 @@ st.set_page_config(
     page_title="Gold Deal Finder",
     page_icon="🟡",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 
@@ -72,6 +72,82 @@ st.markdown(
         align-items: center;
         text-align: center;
         opacity: 0.5;
+    }
+
+    .stButton button,
+    .stLinkButton a {
+        min-height: 46px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .block-container {
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+            padding-top: 0.75rem !important;
+            padding-bottom: 3rem !important;
+        }
+
+        .main-header {
+            padding: 16px 14px;
+            border-radius: 14px;
+            margin-bottom: 14px;
+        }
+
+        .main-title {
+            font-size: 27px;
+            line-height: 1.15;
+        }
+
+        .main-subtitle {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-top: 7px;
+        }
+
+        h3 {
+            font-size: 19px !important;
+            line-height: 1.25 !important;
+        }
+
+        .stButton button,
+        .stLinkButton a {
+            width: 100% !important;
+            min-height: 50px !important;
+            font-size: 16px !important;
+        }
+
+        input {
+            font-size: 16px !important;
+        }
+
+        [data-testid="stMetricValue"] {
+            font-size: 21px !important;
+        }
+
+        [data-testid="stMetricLabel"] {
+            font-size: 12px !important;
+        }
+
+        [data-testid="stImage"] img {
+            max-width: 100% !important;
+            height: auto !important;
+            border-radius: 12px;
+        }
+
+        [data-testid="stVerticalBlockBorderWrapper"] {
+            border-radius: 14px !important;
+        }
+
+        [data-testid="stSidebar"] {
+            min-width: unset;
+        }
+
+        .no-image {
+            max-width: 100%;
+            height: 180px;
+        }
     }
 
     </style>
