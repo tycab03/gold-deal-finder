@@ -1,5 +1,6 @@
 from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import streamlit as st
@@ -12,6 +13,8 @@ from gold_price import get_gold_price_per_gram
 # ============================================================
 
 CSV_FILE = Path("gold_deals.csv")
+
+BRISBANE_TZ = ZoneInfo("Australia/Brisbane")
 
 st.set_page_config(
     page_title="Gold Deal Finder",
@@ -275,12 +278,14 @@ def get_last_updated():
     timestamp = CSV_FILE.stat().st_mtime
 
     return datetime.fromtimestamp(
-        timestamp
+        timestamp,
+        tz=BRISBANE_TZ,
     )
 
 
 def get_verification_badge(row):
     """Return a short, user-facing verification badge for a listing."""
+
     image_status = str(
         row.get("image_verification_status", "")
     ).strip().lower()
@@ -405,7 +410,7 @@ with st.sidebar:
 
         st.write(
             last_updated.strftime(
-                "%d %b %Y • %I:%M %p"
+                "%d %b %Y • %I:%M %p AEST"
             )
         )
 
@@ -894,6 +899,7 @@ st.divider()
 RESULTS_PER_PAGE = 25
 
 total_results = len(filtered_df)
+
 total_pages = max(
     1,
     (total_results + RESULTS_PER_PAGE - 1)
@@ -931,21 +937,25 @@ if total_results > 0:
 
 
 def pagination_controls(key_prefix):
+
     previous_col, page_col, next_col = st.columns(
         [1, 2, 1]
     )
 
     with previous_col:
+
         if st.button(
             "← Previous",
             key=f"{key_prefix}_previous",
             disabled=st.session_state.results_page <= 1,
             use_container_width=True,
         ):
+
             st.session_state.results_page -= 1
             st.rerun()
 
     with page_col:
+
         st.markdown(
             f"<div style='text-align:center; padding-top:0.65rem;'>"
             f"<strong>Page {st.session_state.results_page:,} "
@@ -955,12 +965,14 @@ def pagination_controls(key_prefix):
         )
 
     with next_col:
+
         if st.button(
             "Next →",
             key=f"{key_prefix}_next",
             disabled=st.session_state.results_page >= total_pages,
             use_container_width=True,
         ):
+
             st.session_state.results_page += 1
             st.rerun()
 
@@ -988,6 +1000,7 @@ if len(filtered_df) == 0:
 page_df = filtered_df.iloc[
     page_start:page_end
 ]
+
 
 for position, (_, row) in enumerate(
     page_df.iterrows(),
@@ -1090,7 +1103,6 @@ for position, (_, row) in enumerate(
         border=True
     ):
 
-        # Slightly wider image column prevents overlap
         image_col, info_col = (
             st.columns(
                 [1.25, 4],
@@ -1106,8 +1118,6 @@ for position, (_, row) in enumerate(
 
             if image_url:
 
-                # IMPORTANT:
-                # This Streamlit version requires integer width.
                 st.image(
                     image_url,
                     width=220,
@@ -1141,7 +1151,6 @@ for position, (_, row) in enumerate(
                 )
             )
 
-
             with title_col:
 
                 st.markdown(
@@ -1163,7 +1172,6 @@ for position, (_, row) in enumerate(
                     unsafe_allow_html=True,
                 )
 
-
             with percentage_col:
 
                 st.caption(
@@ -1173,7 +1181,6 @@ for position, (_, row) in enumerate(
                 st.markdown(
                     f"### {percent:+.1f}%"
                 )
-
 
             # ------------------------------------------------
             # METRICS
@@ -1187,14 +1194,12 @@ for position, (_, row) in enumerate(
                 carat_col,
             ) = st.columns(5)
 
-
             with cost_col:
 
                 st.metric(
                     "Total Cost",
                     f"${row['total_price']:,.0f}",
                 )
-
 
             with gold_col:
 
@@ -1203,14 +1208,12 @@ for position, (_, row) in enumerate(
                     f"${row['theoretical_gold_value']:,.0f}",
                 )
 
-
             with diff_col:
 
                 st.metric(
                     "Difference",
                     f"{'-' if difference < 0 else '+' if difference > 0 else ''}${abs(difference):,.0f}",
                 )
-
 
             with weight_col:
 
@@ -1219,14 +1222,12 @@ for position, (_, row) in enumerate(
                     f"{row['weight']:.2f}g",
                 )
 
-
             with carat_col:
 
                 st.metric(
                     "Carat",
                     f"{int(row['carat'])}ct",
                 )
-
 
             # ------------------------------------------------
             # VALUE DESCRIPTION
@@ -1235,7 +1236,6 @@ for position, (_, row) in enumerate(
             st.markdown(
                 f"**{comparison_text}**"
             )
-
 
             # ------------------------------------------------
             # SECONDARY INFORMATION
@@ -1253,7 +1253,6 @@ for position, (_, row) in enumerate(
                 f"  •  "
                 f"Item #{row['code']}"
             )
-
 
             # ------------------------------------------------
             # CASH CONVERTERS BUTTON
@@ -1273,7 +1272,9 @@ for position, (_, row) in enumerate(
 # ============================================================
 
 if total_results > 0:
+
     st.divider()
+
     pagination_controls("bottom")
 
 
