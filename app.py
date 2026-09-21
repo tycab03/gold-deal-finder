@@ -490,14 +490,14 @@ with st.sidebar:
     )
 
     # --------------------------------------------------------
-    # MAXIMUM % VS GOLD
+    # % VS GOLD RANGE
     # --------------------------------------------------------
 
-    max_markup = st.slider(
-        "Maximum % vs gold value",
-        min_value=-50,
+    min_markup, max_markup = st.slider(
+        "% vs gold value range",
+        min_value=-100,
         max_value=200,
-        value=25,
+        value=(-50, 25),
         step=5,
     )
 
@@ -717,14 +717,22 @@ if selected_carats:
 
 
 # ------------------------------------------------------------
-# MAXIMUM % VS GOLD
+# % VS GOLD RANGE
 # ------------------------------------------------------------
 
 filtered_df = (
     filtered_df[
-        filtered_df[
-            "price_vs_gold_pct"
-        ] <= max_markup
+        (
+            filtered_df[
+                "price_vs_gold_pct"
+            ] >= min_markup
+        )
+        &
+        (
+            filtered_df[
+                "price_vs_gold_pct"
+            ] <= max_markup
+        )
     ]
 )
 
