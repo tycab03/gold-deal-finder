@@ -278,20 +278,13 @@ def get_verification_badge(row):
 # ============================================================
 
 st.markdown(
-    """
-    <div class="main-header">
-
-        <div class="main-title">
-            🟡 Gold Deal Finder
-        </div>
-
-        <div class="main-subtitle">
-            Find second-hand gold listings and compare their
-            purchase price with their theoretical contained-gold value.
-        </div>
-
-    </div>
-    """,
+    '<div class="main-header">'
+    '<div class="main-title">🟡 Gold Deal Finder</div>'
+    '<div class="main-subtitle">'
+    'Find second-hand gold listings and compare their purchase price '
+    'with their theoretical contained-gold value.'
+    '</div>'
+    '</div>',
     unsafe_allow_html=True,
 )
 
@@ -905,35 +898,81 @@ elif sort_option == "Highest gold value":
 
 st.divider()
 
-result_col, show_col = (
-    st.columns(
-        [4, 1]
-    )
+RESULTS_PER_PAGE = 25
+
+total_results = len(filtered_df)
+total_pages = max(
+    1,
+    (total_results + RESULTS_PER_PAGE - 1)
+    // RESULTS_PER_PAGE,
 )
 
+if "results_page" not in st.session_state:
+    st.session_state.results_page = 1
 
-with result_col:
+if st.session_state.results_page > total_pages:
+    st.session_state.results_page = total_pages
 
-    st.subheader(
-        f"{len(filtered_df):,} "
-        f"listings found"
+if st.session_state.results_page < 1:
+    st.session_state.results_page = 1
+
+st.subheader(
+    f"{total_results:,} listings found"
+)
+
+page_start = (
+    (st.session_state.results_page - 1)
+    * RESULTS_PER_PAGE
+)
+
+page_end = min(
+    page_start + RESULTS_PER_PAGE,
+    total_results,
+)
+
+if total_results > 0:
+    st.caption(
+        f"Showing {page_start + 1:,}–{page_end:,} "
+        f"of {total_results:,}"
     )
 
 
-with show_col:
+def pagination_controls(key_prefix):
+    previous_col, page_col, next_col = st.columns(
+        [1, 2, 1]
+    )
 
-    number_to_show = (
-        st.selectbox(
-            "Results shown",
-            [
-                10,
-                25,
-                50,
-                100,
-            ],
-            index=1,
+    with previous_col:
+        if st.button(
+            "← Previous",
+            key=f"{key_prefix}_previous",
+            disabled=st.session_state.results_page <= 1,
+            use_container_width=True,
+        ):
+            st.session_state.results_page -= 1
+            st.rerun()
+
+    with page_col:
+        st.markdown(
+            f"<div style='text-align:center; padding-top:0.65rem;'>"
+            f"<strong>Page {st.session_state.results_page:,} "
+            f"of {total_pages:,}</strong>"
+            f"</div>",
+            unsafe_allow_html=True,
         )
-    )
+
+    with next_col:
+        if st.button(
+            "Next →",
+            key=f"{key_prefix}_next",
+            disabled=st.session_state.results_page >= total_pages,
+            use_container_width=True,
+        ):
+            st.session_state.results_page += 1
+            st.rerun()
+
+
+pagination_controls("top")
 
 
 # ============================================================
@@ -953,11 +992,13 @@ if len(filtered_df) == 0:
 # PRODUCT CARDS
 # ============================================================
 
+page_df = filtered_df.iloc[
+    page_start:page_end
+]
+
 for position, (_, row) in enumerate(
-    filtered_df.head(
-        number_to_show
-    ).iterrows(),
-    start=1,
+    page_df.iterrows(),
+    start=page_start + 1,
 ):
 
     percent = float(
@@ -1232,6 +1273,15 @@ for position, (_, row) in enumerate(
                     listing_url,
                     use_container_width=True,
                 )
+
+
+# ============================================================
+# BOTTOM PAGINATION
+# ============================================================
+
+if total_results > 0:
+    st.divider()
+    pagination_controls("bottom")
 
 
 # ============================================================
