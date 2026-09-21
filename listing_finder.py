@@ -167,11 +167,46 @@ def is_solid_gold_candidate(title):
         "gold colored",
         "gold-colored",
 
-        # Other metals
+        # Mixed metals / non-solid-gold wording
+        # Reject these anywhere in the title. This intentionally sacrifices
+        # some mixed-metal jewellery so gross weight is not valued as gold.
+        "silver",
+        "sterling",
         "copper",
-        "sterling silver",
-        "silver and gold",
-        "silver & gold",
+        "plated",
+        "plate",
+        "pandora",
+
+        # Set / decorative / non-gold materials
+        "paste",
+        "jade",
+        "jadeite",
+        "mother of pearl",
+        "mother-of-pearl",
+
+        # Generic stones / gems
+        # We deliberately reject any listing that advertises a stone because
+        # the stated gross weight may not represent gold weight alone.
+        "stone",
+        "stones",
+        "srone",      # Common Cashies typo observed in listings
+        "gem",
+        "gemstone",
+        "crystal",
+        "crystals",
+        "moissanite",
+        "moissanites",
+        "jet",
+
+        # Non-gold decorative materials / inlays
+        "glass",
+        "coral",
+        "plastic",
+        "resin",
+        "enamel",
+        "shell",
+        "mother of pearl",
+        "mother-of-pearl",
 
         # Pearls
         "pearl",
@@ -223,6 +258,13 @@ def is_solid_gold_candidate(title):
         r"\bRGP\b",
         r"\bGF\b",
         r"\bCZ\b",
+
+        # Gem / diamond abbreviations
+        r"\bTDW\b",
+        r"\bCTW\b",
+        r"\bDIA\b",
+        r"\bDIAS\b",
+        r"\bMOP\b",
     ]
 
     for pattern in excluded_patterns:
@@ -1210,10 +1252,61 @@ if __name__ == "__main__":
         # 1. SCAN CASHIES
         # ====================================================
 
-        products = find_gold_candidates(
-            query="9ct gold",
-            results_per_page=RESULTS_PER_PAGE,
-        )
+        # Search every supported carat, then merge and deduplicate by item code.
+        search_queries = [
+            "9ct gold",
+            "14ct gold",
+            "18ct gold",
+            "22ct gold",
+            "24ct gold",
+        ]
+
+        products_by_code = {}
+
+        for search_number, query in enumerate(search_queries, start=1):
+            print()
+            print("#" * 72)
+            print(
+                f"CARAT SEARCH {search_number}/{len(search_queries)}: "
+                f"{query.upper()}"
+            )
+            print("#" * 72)
+
+            query_products = find_gold_candidates(
+                query=query,
+                results_per_page=RESULTS_PER_PAGE,
+            )
+
+            before = len(products_by_code)
+
+            for product in query_products:
+                products_by_code[product["code"]] = product
+
+            added = len(products_by_code) - before
+
+            print()
+            print(
+                f"{query}: {len(query_products):,} usable returned | "
+                f"{added:,} new unique | "
+                f"{len(products_by_code):,} unique combined"
+            )
+
+        products = list(products_by_code.values())
+
+        print()
+        print("=" * 72)
+        print("                    ALL-CARAT SCAN COMPLETE")
+        print("=" * 72)
+        print(f"Unique usable products: {len(products):,}")
+
+        for carat in SUPPORTED_CARATS:
+            count = sum(
+                1 for product in products
+                if product["carat"] == carat
+            )
+            print(f"{carat}ct: {count:,}")
+
+        print("=" * 72)
 
         if not products:
 
