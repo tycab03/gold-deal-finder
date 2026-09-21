@@ -24,6 +24,7 @@ MAX_WORKERS = 5
 MAX_RETRIES = 4
 
 CSV_FILENAME = "gold_deals.csv"
+IMAGE_REJECTED_CSV_FILENAME = "image_rejected.csv"
 
 HEADERS = {
     "User-Agent": (
@@ -1084,6 +1085,57 @@ def classify_product_image(product, classifier):
     return "image_uncertain", label, confidence
 
 
+def export_image_rejections(products, filename=IMAGE_REJECTED_CSV_FILENAME):
+    """Save CLIP-rejected listings separately for manual validation."""
+    fieldnames = [
+        "code", "title", "carat", "weight", "price", "shipping",
+        "total_price", "theoretical_gold_value", "difference",
+        "price_vs_gold_pct", "store", "category", "verification_status",
+        "detail_flags", "image_verification_status", "image_label",
+        "image_confidence", "image_url", "url",
+    ]
+
+    with open(filename, "w", newline="", encoding="utf-8") as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+
+        for product in products:
+            writer.writerow({
+                "code": product.get("code", ""),
+                "title": product.get("title", ""),
+                "carat": product.get("carat", ""),
+                "weight": round(product.get("weight", 0), 2),
+                "price": round(product.get("price", 0), 2),
+                "shipping": round(product.get("shipping", 0), 2),
+                "total_price": round(product.get("total_price", 0), 2),
+                "theoretical_gold_value": round(
+                    product.get("theoretical_gold_value", 0), 2
+                ),
+                "difference": round(product.get("difference", 0), 2),
+                "price_vs_gold_pct": round(
+                    product.get("price_vs_gold_pct", 0), 2
+                ),
+                "store": product.get("store") or "",
+                "category": product.get("category") or "",
+                "verification_status": product.get(
+                    "verification_status", "title_only"
+                ),
+                "detail_flags": product.get("detail_flags", ""),
+                "image_verification_status": product.get(
+                    "image_verification_status", ""
+                ),
+                "image_label": product.get("image_label", ""),
+                "image_confidence": product.get("image_confidence", ""),
+                "image_url": product.get("image_url") or "",
+                "url": product.get("url") or "",
+            })
+
+    print(
+        f"Saved {len(products):,} image-rejected "
+        f"listing(s) to {filename}"
+    )
+
+
 def verify_product_images(products):
     """Image-check suspicious bargains that survived the detail-page filter.
 
@@ -1104,6 +1156,7 @@ def verify_product_images(products):
         product.setdefault("image_confidence", "")
 
     if not targets:
+        export_image_rejections([])
         return products
 
     print()
@@ -1128,6 +1181,7 @@ def verify_product_images(products):
         for product in targets:
             product["image_verification_status"] = "image_unverified"
 
+        export_image_rejections([])
         print("=" * 72)
         return products
 
@@ -1187,12 +1241,21 @@ def verify_product_images(products):
                 f"{type(error).__name__}: {error}"
             )
 
+    rejected_products = [
+        product
+        for product in products
+        if product["code"] in rejected_codes
+    ]
+    rejected_products.sort(key=lambda product: product["price_vs_gold_pct"])
+
     cleaned = [
         product
         for product in products
         if product["code"] not in rejected_codes
     ]
     cleaned.sort(key=lambda product: product["price_vs_gold_pct"])
+
+    export_image_rejections(rejected_products)
 
     print("-" * 72)
     print(f"Images checked: {checked}")
