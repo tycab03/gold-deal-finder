@@ -81,6 +81,18 @@ st.markdown(
         font-weight: 600;
     }
 
+    .verification-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        margin-top: 4px;
+        margin-bottom: 10px;
+        border: 1px solid rgba(128,128,128,0.25);
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
     @media (max-width: 768px) {
         .block-container {
             padding-left: 0.75rem !important;
@@ -231,6 +243,34 @@ def refresh_listings():
     )
 
     return result
+
+
+def get_verification_badge(row):
+    """Return a short, user-facing verification badge for a listing."""
+    image_status = str(
+        row.get("image_verification_status", "")
+    ).strip().lower()
+
+    text_status = str(
+        row.get("verification_status", "")
+    ).strip().lower()
+
+    if image_status == "image_gold_likely":
+        return "🟢 Image checked"
+
+    if image_status == "image_uncertain":
+        return "🟡 Image uncertain"
+
+    if image_status == "image_unverified":
+        return "🟠 Image check unavailable"
+
+    if text_status == "text_checked":
+        return "🔵 Text checked"
+
+    if text_status == "unverified":
+        return "🟠 Text check unavailable"
+
+    return "⚪ Title only"
 
 
 # ============================================================
@@ -1078,6 +1118,15 @@ for position, (_, row) in enumerate(
                 st.caption(
                     f"📍 {store}  •  "
                     f"{category}"
+                )
+
+                verification_badge = get_verification_badge(row)
+
+                st.markdown(
+                    f'<span class="verification-badge">'
+                    f'{verification_badge}'
+                    f'</span>',
+                    unsafe_allow_html=True,
                 )
 
 
