@@ -338,6 +338,12 @@ if not CSV_FILE.exists():
 
 df = load_data()
 
+# Normalise carat values so Streamlit always works with integer carats.
+df["carat"] = pd.to_numeric(
+    df["carat"],
+    errors="coerce",
+).astype("Int64")
+
 
 # ============================================================
 # GOLD PRICE
@@ -419,21 +425,53 @@ with st.sidebar:
     # CARAT
     # --------------------------------------------------------
 
-    available_carats = sorted(
+    supported_carats = [9, 14, 18, 22, 24]
+
+    carats_in_data = set(
         df["carat"]
         .dropna()
         .astype(int)
         .unique()
+        .tolist()
     )
 
-    selected_carats = (
-        st.multiselect(
-            "Gold carat",
-            options=available_carats,
-            default=available_carats,
-            format_func=lambda x:
-                f"{x}ct",
-        )
+    available_carats = [
+        carat
+        for carat in supported_carats
+        if carat in carats_in_data
+    ]
+
+    # Use an explicit key so we can clean stale selections left over from
+    # an older 9ct-only Streamlit session.
+    if "gold_carat_filter" in st.session_state:
+        current_selection = st.session_state["gold_carat_filter"]
+
+        if not isinstance(current_selection, list):
+            current_selection = list(current_selection)
+
+        cleaned_selection = [
+            int(carat)
+            for carat in current_selection
+            if int(carat) in available_carats
+        ]
+
+        # If the old session only knew about 9ct, reset to all available
+        # carats when the catalogue now contains additional carats.
+        if (
+            cleaned_selection == [9]
+            and len(available_carats) > 1
+        ):
+            del st.session_state["gold_carat_filter"]
+
+        else:
+            st.session_state["gold_carat_filter"] = cleaned_selection
+
+    selected_carats = st.multiselect(
+        "Gold carat",
+        options=available_carats,
+        default=available_carats,
+        format_func=lambda x: f"{x}ct",
+        key="gold_carat_filter",
     )
 
     # --------------------------------------------------------
