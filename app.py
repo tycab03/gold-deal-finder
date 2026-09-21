@@ -1,6 +1,3 @@
-import subprocess
-import sys
-
 from datetime import datetime
 from pathlib import Path
 
@@ -15,7 +12,6 @@ from gold_price import get_gold_price_per_gram
 # ============================================================
 
 CSV_FILE = Path("gold_deals.csv")
-SCANNER_FILE = Path("listing_finder.py")
 
 st.set_page_config(
     page_title="Gold Deal Finder",
@@ -93,7 +89,59 @@ st.markdown(
         line-height: 1.2;
     }
 
+    .gold-metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0.8rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .summary-metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .custom-metric {
+        min-width: 0;
+        padding: 0.85rem 0.95rem;
+        border: 1px solid rgba(128,128,128,0.20);
+        border-radius: 12px;
+    }
+
+    .custom-metric-label {
+        font-size: 0.88rem;
+        opacity: 0.72;
+        margin-bottom: 0.2rem;
+    }
+
+    .custom-metric-value {
+        font-size: 1.45rem;
+        font-weight: 600;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
     @media (max-width: 768px) {
+        .gold-metrics-grid,
+        .summary-metrics-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.55rem;
+        }
+
+        .custom-metric {
+            padding: 0.7rem 0.75rem;
+        }
+
+        .custom-metric-label {
+            font-size: 0.78rem;
+        }
+
+        .custom-metric-value {
+            font-size: 1.12rem;
+        }
+
         .block-container {
             padding-left: 0.75rem !important;
             padding-right: 0.75rem !important;
@@ -231,20 +279,6 @@ def get_last_updated():
     )
 
 
-def refresh_listings():
-
-    result = subprocess.run(
-        [
-            sys.executable,
-            str(SCANNER_FILE),
-        ],
-        capture_output=True,
-        text=True,
-    )
-
-    return result
-
-
 def get_verification_badge(row):
     """Return a short, user-facing verification badge for a listing."""
     image_status = str(
@@ -290,56 +324,11 @@ st.markdown(
 
 
 # ============================================================
-# CHECK FILES
+# CHECK DATA FILE
 # ============================================================
 
-if not SCANNER_FILE.exists():
-
-    st.error(
-        "listing_finder.py could not be found."
-    )
-
-    st.stop()
-
-
 if not CSV_FILE.exists():
-
-    st.warning(
-        "No catalogue data has been generated yet."
-    )
-
-    if st.button(
-        "🔄 Scan Cash Converters",
-        type="primary",
-    ):
-
-        with st.spinner(
-            "Scanning Cash Converters..."
-        ):
-
-            result = refresh_listings()
-
-        if result.returncode == 0:
-
-            st.success(
-                "Scan complete."
-            )
-
-            st.cache_data.clear()
-
-            st.rerun()
-
-        else:
-
-            st.error(
-                "Scanner error."
-            )
-
-            st.code(
-                result.stderr
-                or result.stdout
-            )
-
+    st.warning("No catalogue data has been generated yet.")
     st.stop()
 
 
@@ -414,53 +403,11 @@ with st.sidebar:
             )
         )
 
-    # --------------------------------------------------------
-    # REFRESH
-    # --------------------------------------------------------
+    st.divider()
 
-    if st.button(
-        "🔄 Refresh Listings",
-        type="primary",
-        use_container_width=True,
-    ):
-
-        message = st.empty()
-
-        message.info(
-            "Scanning Cash Converters..."
-        )
-
-        with st.spinner(
-            "Scanning catalogue. "
-            "This may take 1–2 minutes."
-        ):
-
-            result = refresh_listings()
-
-        if result.returncode == 0:
-
-            message.success(
-                "Catalogue updated."
-            )
-
-            st.cache_data.clear()
-
-            st.rerun()
-
-        else:
-
-            message.error(
-                "Scanner failed."
-            )
-
-            with st.expander(
-                "Scanner error"
-            ):
-
-                st.code(
-                    result.stderr
-                    or result.stdout
-                )
+    st.caption(
+        "Catalogue updates are published from the verified scanner data."
+    )
 
     st.divider()
 
@@ -612,72 +559,44 @@ image_count = (
 )
 
 
-(
-    metric24,
-    metric22,
-    metric18,
-    metric14,
-    metric9,
-) = st.columns(5)
+st.markdown(
+    f"""
+    <div class="gold-metrics-grid">
+        <div class="custom-metric">
+            <div class="custom-metric-label">24ct Gold</div>
+            <div class="custom-metric-value">${gold_price * 0.999:,.2f}/g</div>
+        </div>
+        <div class="custom-metric">
+            <div class="custom-metric-label">22ct Gold</div>
+            <div class="custom-metric-value">${gold_price * 0.916:,.2f}/g</div>
+        </div>
+        <div class="custom-metric">
+            <div class="custom-metric-label">18ct Gold</div>
+            <div class="custom-metric-value">${gold_price * 0.750:,.2f}/g</div>
+        </div>
+        <div class="custom-metric">
+            <div class="custom-metric-label">14ct Gold</div>
+            <div class="custom-metric-value">${gold_price * 0.585:,.2f}/g</div>
+        </div>
+        <div class="custom-metric">
+            <div class="custom-metric-label">9ct Gold</div>
+            <div class="custom-metric-value">${gold_price * 0.375:,.2f}/g</div>
+        </div>
+    </div>
 
-
-with metric24:
-
-    st.metric(
-        "24ct Gold",
-        f"${gold_price * 0.999:,.2f}/g",
-    )
-
-
-with metric22:
-
-    st.metric(
-        "22ct Gold",
-        f"${gold_price * 0.916:,.2f}/g",
-    )
-
-
-with metric18:
-
-    st.metric(
-        "18ct Gold",
-        f"${gold_price * 0.750:,.2f}/g",
-    )
-
-
-with metric14:
-
-    st.metric(
-        "14ct Gold",
-        f"${gold_price * 0.585:,.2f}/g",
-    )
-
-
-with metric9:
-
-    st.metric(
-        "9ct Gold",
-        f"${gold_price * 0.375:,.2f}/g",
-    )
-
-
-listing_metric, below_metric = st.columns(2)
-
-
-with listing_metric:
-
-    st.metric(
-        "Gold Listings",
-        f"{len(df):,}",
-    )
-
-
-with below_metric:
-
-    st.metric(
-        "Below Theoretical",
-        f"{below_gold_count:,}",
-    )
+    <div class="summary-metrics-grid">
+        <div class="custom-metric">
+            <div class="custom-metric-label">Gold Listings</div>
+            <div class="custom-metric-value">{len(df):,}</div>
+        </div>
+        <div class="custom-metric">
+            <div class="custom-metric-label">Below Theoretical</div>
+            <div class="custom-metric-value">{below_gold_count:,}</div>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 # ============================================================
