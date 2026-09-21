@@ -613,22 +613,47 @@ image_count = (
 
 
 (
-    metric1,
-    metric2,
-    metric3,
-    metric4,
-) = st.columns(4)
+    metric24,
+    metric22,
+    metric18,
+    metric14,
+    metric9,
+) = st.columns(5)
 
 
-with metric1:
+with metric24:
 
     st.metric(
-        "24ct Spot",
-        f"${gold_price:,.2f}/g",
+        "24ct Gold",
+        f"${gold_price * 0.999:,.2f}/g",
     )
 
 
-with metric2:
+with metric22:
+
+    st.metric(
+        "22ct Gold",
+        f"${gold_price * 0.916:,.2f}/g",
+    )
+
+
+with metric18:
+
+    st.metric(
+        "18ct Gold",
+        f"${gold_price * 0.750:,.2f}/g",
+    )
+
+
+with metric14:
+
+    st.metric(
+        "14ct Gold",
+        f"${gold_price * 0.585:,.2f}/g",
+    )
+
+
+with metric9:
 
     st.metric(
         "9ct Gold",
@@ -636,7 +661,10 @@ with metric2:
     )
 
 
-with metric3:
+listing_metric, below_metric = st.columns(2)
+
+
+with listing_metric:
 
     st.metric(
         "Gold Listings",
@@ -644,7 +672,7 @@ with metric3:
     )
 
 
-with metric4:
+with below_metric:
 
     st.metric(
         "Below Theoretical",
