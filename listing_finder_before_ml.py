@@ -3,10 +3,6 @@ import time
 import csv
 import requests
 from bs4 import BeautifulSoup
-from io import BytesIO
-
-# ML imports are lazy-loaded later so the normal catalogue scan can start
-# without loading PyTorch/Transformers into memory.
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from gold_price import get_gold_price_per_gram
@@ -938,7 +934,7 @@ def verify_suspicious_products(products):
             flags = find_detail_reject_terms(text)
             if flags:
                 return product, "rejected_mixed_material", flags
-            return product, "text_checked", []
+            return product, "detail_checked", []
         except Exception as error:
             return product, "unverified", [type(error).__name__]
 
@@ -972,234 +968,6 @@ def verify_suspicious_products(products):
     print("-" * 72)
     print(f"Detail pages checked: {len(targets)}")
     print(f"Mixed-material listings removed: {len(rejected_codes)}")
-    print(f"Listings remaining: {len(cleaned):,}")
-    print("=" * 72)
-
-    return cleaned
-
-
-
-# ============================================================
-# IMAGE VERIFICATION (CLIP ZERO-SHOT)
-# ============================================================
-
-IMAGE_VERIFY_THRESHOLD_PCT = -10.0
-IMAGE_VERIFY_MAX_PRODUCTS = 50
-
-# A deliberately conservative automatic-rejection threshold.
-# Lower-confidence results are retained as "image_uncertain".
-IMAGE_REJECT_CONFIDENCE = 0.60
-
-IMAGE_LABELS = [
-    "plain solid gold jewellery with no pearls, gemstones, stones or decorative inserts",
-    "pearl jewellery or jewellery containing pearls",
-    "gemstone, diamond or stone set jewellery",
-    "mixed material jewellery containing non-gold decorative material",
-    "gold plated, costume or imitation jewellery",
-]
-
-IMAGE_SAFE_LABEL = IMAGE_LABELS[0]
-
-_IMAGE_CLASSIFIER = None
-
-
-def get_image_classifier():
-    """Lazy-load CLIP only when suspicious listings actually need image checks."""
-    global _IMAGE_CLASSIFIER
-
-    if _IMAGE_CLASSIFIER is not None:
-        return _IMAGE_CLASSIFIER
-
-    print()
-    print("Loading CLIP image model...")
-
-    try:
-        from transformers import pipeline
-    except ImportError as error:
-        raise RuntimeError(
-            "Image verification requires transformers, torch and Pillow. "
-            "Install them with: pip install transformers torch Pillow"
-        ) from error
-
-    # Explicit model avoids relying on a changing pipeline default.
-    _IMAGE_CLASSIFIER = pipeline(
-        task="zero-shot-image-classification",
-        model="openai/clip-vit-base-patch32",
-    )
-
-    return _IMAGE_CLASSIFIER
-
-
-def fetch_product_image(product):
-    """Download a candidate's catalogue image and return a PIL RGB image."""
-    image_url = product.get("image_url")
-
-    if not image_url:
-        raise ValueError("missing_image_url")
-
-    response = requests.get(
-        image_url,
-        headers={
-            "User-Agent": HEADERS["User-Agent"],
-            "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
-        },
-        timeout=20,
-    )
-    response.raise_for_status()
-
-    try:
-        from PIL import Image
-    except ImportError as error:
-        raise RuntimeError(
-            "Image verification requires Pillow. "
-            "Install it with: pip install Pillow"
-        ) from error
-
-    image = Image.open(BytesIO(response.content))
-    return image.convert("RGB")
-
-
-def classify_product_image(product, classifier):
-    """Classify one listing image using CLIP zero-shot labels."""
-    image = fetch_product_image(product)
-
-    predictions = classifier(
-        image,
-        candidate_labels=IMAGE_LABELS,
-    )
-
-    if not predictions:
-        return "image_unverified", "", 0.0
-
-    best = predictions[0]
-    label = str(best.get("label", ""))
-    confidence = float(best.get("score", 0.0))
-
-    if label == IMAGE_SAFE_LABEL:
-        return "image_gold_likely", label, confidence
-
-    if confidence >= IMAGE_REJECT_CONFIDENCE:
-        return "rejected_image_mixed_material", label, confidence
-
-    return "image_uncertain", label, confidence
-
-
-def verify_product_images(products):
-    """Image-check suspicious bargains that survived the detail-page filter.
-
-    Only listings at least 10% below theoretical contained-gold value are sent
-    to CLIP. The image model is used as a conservative screening layer rather
-    than proof of composition. Network/model failures retain the listing and
-    mark it unverified.
-    """
-    targets = [
-        product
-        for product in products
-        if product.get("price_vs_gold_pct", 999) <= IMAGE_VERIFY_THRESHOLD_PCT
-    ][:IMAGE_VERIFY_MAX_PRODUCTS]
-
-    for product in products:
-        product.setdefault("image_verification_status", "not_checked")
-        product.setdefault("image_label", "")
-        product.setdefault("image_confidence", "")
-
-    if not targets:
-        return products
-
-    print()
-    print("=" * 72)
-    print("                    IMAGE VERIFICATION")
-    print("=" * 72)
-    print(
-        f"Checking {len(targets)} suspicious images with CLIP "
-        f"({IMAGE_VERIFY_THRESHOLD_PCT:.0f}% or lower vs gold)..."
-    )
-
-    try:
-        classifier = get_image_classifier()
-    except Exception as error:
-        print()
-        print(
-            "Image verification unavailable: "
-            f"{type(error).__name__}: {error}"
-        )
-        print("Listings retained as image_unverified.")
-
-        for product in targets:
-            product["image_verification_status"] = "image_unverified"
-
-        print("=" * 72)
-        return products
-
-    rejected_codes = set()
-    checked = 0
-    uncertain = 0
-    gold_likely = 0
-    failed = 0
-
-    # Run model inference sequentially. This avoids multiple worker threads
-    # trying to use the same PyTorch model simultaneously.
-    for index, product in enumerate(targets, start=1):
-        try:
-            status, label, confidence = classify_product_image(
-                product,
-                classifier,
-            )
-
-            product["image_verification_status"] = status
-            product["image_label"] = label
-            product["image_confidence"] = round(confidence, 4)
-            checked += 1
-
-            if status == "rejected_image_mixed_material":
-                rejected_codes.add(product["code"])
-                print(
-                    f"[{index}/{len(targets)}] IMAGE REJECT | "
-                    f"{product['title']} | "
-                    f"{label} | {confidence:.1%}"
-                )
-
-            elif status == "image_gold_likely":
-                gold_likely += 1
-                print(
-                    f"[{index}/{len(targets)}] GOLD-LIKELY | "
-                    f"{product['title']} | "
-                    f"{confidence:.1%}"
-                )
-
-            else:
-                uncertain += 1
-                print(
-                    f"[{index}/{len(targets)}] UNCERTAIN | "
-                    f"{product['title']} | "
-                    f"{label} | {confidence:.1%}"
-                )
-
-        except Exception as error:
-            failed += 1
-            product["image_verification_status"] = "image_unverified"
-            product["image_label"] = type(error).__name__
-            product["image_confidence"] = ""
-
-            print(
-                f"[{index}/{len(targets)}] IMAGE FAILED | "
-                f"{product['title']} | "
-                f"{type(error).__name__}: {error}"
-            )
-
-    cleaned = [
-        product
-        for product in products
-        if product["code"] not in rejected_codes
-    ]
-    cleaned.sort(key=lambda product: product["price_vs_gold_pct"])
-
-    print("-" * 72)
-    print(f"Images checked: {checked}")
-    print(f"Gold-looking: {gold_likely}")
-    print(f"Uncertain retained: {uncertain}")
-    print(f"Image checks failed: {failed}")
-    print(f"Image-rejected listings removed: {len(rejected_codes)}")
     print(f"Listings remaining: {len(cleaned):,}")
     print("=" * 72)
 
@@ -1365,9 +1133,6 @@ def export_to_csv(
         "url",
         "verification_status",
         "detail_flags",
-        "image_verification_status",
-        "image_label",
-        "image_confidence",
     ]
 
     with open(
@@ -1498,24 +1263,6 @@ def export_to_csv(
                 "detail_flags":
                     product.get(
                         "detail_flags",
-                        "",
-                    ),
-
-                "image_verification_status":
-                    product.get(
-                        "image_verification_status",
-                        "not_checked",
-                    ),
-
-                "image_label":
-                    product.get(
-                        "image_label",
-                        "",
-                    ),
-
-                "image_confidence":
-                    product.get(
-                        "image_confidence",
                         "",
                     ),
             })
@@ -1777,15 +1524,7 @@ if __name__ == "__main__":
         )
 
         # ====================================================
-        # 5. IMAGE-VERIFY SUSPICIOUS BARGAINS
-        # ====================================================
-
-        analysed_products = verify_product_images(
-            analysed_products
-        )
-
-        # ====================================================
-        # 6. EXPORT
+        # 4. EXPORT
         # ====================================================
 
         export_to_csv(
@@ -1794,7 +1533,7 @@ if __name__ == "__main__":
         )
 
         # ====================================================
-        # 7. DISPLAY
+        # 5. DISPLAY
         # ====================================================
 
         display_results(
