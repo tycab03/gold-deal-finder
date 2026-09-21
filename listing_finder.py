@@ -2,6 +2,7 @@ import re
 import time
 import csv
 import requests
+from bs4 import BeautifulSoup
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from gold_price import get_gold_price_per_gram
@@ -826,6 +827,154 @@ def find_gold_candidates(
 
 
 # ============================================================
+# DETAIL-PAGE VERIFICATION
+# ============================================================
+
+DETAIL_VERIFY_THRESHOLD_PCT = -10.0
+DETAIL_VERIFY_MAX_PRODUCTS = 150
+
+DETAIL_REJECT_TERMS = [
+    "pearl", "pearls", "diamond", "diamonds", "stone", "stones",
+    "gemstone", "gemstones", "cubic zirconia", "zirconia", "opal",
+    "sapphire", "ruby", "emerald", "jade", "jadeite", "coral",
+    "glass", "crystal", "resin", "plastic", "enamel", "shell",
+    "mother of pearl", "mother-of-pearl", "sterling silver",
+    "silver and gold", "silver & gold", "gold plated", "gold-plated",
+    "gold filled", "gold-filled", "vermeil", "paste set",
+]
+
+
+def fetch_product_detail_text(product):
+    """Return product-specific text from a Cash Converters detail page.
+
+    We deliberately avoid scanning navigation/footer text because words such as
+    'silver' can appear elsewhere on the site and create false rejections.
+    """
+    url = product.get("url")
+    if not url:
+        return ""
+
+    response = requests.get(
+        url,
+        headers={**HEADERS, "Accept": "text/html,application/xhtml+xml"},
+        timeout=20,
+    )
+    response.raise_for_status()
+
+    soup = BeautifulSoup(response.text, "html.parser")
+    chunks = []
+
+    # Metadata often contains the actual listing description.
+    for attrs in (
+        {"name": "description"},
+        {"property": "og:description"},
+        {"property": "og:title"},
+    ):
+        tag = soup.find("meta", attrs=attrs)
+        if tag and tag.get("content"):
+            chunks.append(tag.get("content"))
+
+    # Product structured data can contain description/material information.
+    for script in soup.find_all("script", attrs={"type": "application/ld+json"}):
+        if script.string:
+            chunks.append(script.string)
+
+    # Restrict visible text to likely product-content containers.
+    for selector in (
+        "main",
+        "article",
+        "[class*='product-detail']",
+        "[class*='productDetail']",
+        "[class*='description']",
+        "[id*='description']",
+    ):
+        for node in soup.select(selector):
+            chunks.append(node.get_text(" ", strip=True))
+
+    return " ".join(chunks)
+
+
+def find_detail_reject_terms(text):
+    text_lower = text.lower()
+    return sorted({term for term in DETAIL_REJECT_TERMS if term in text_lower})
+
+
+def verify_suspicious_products(products):
+    """Detail-check unusually cheap listings before allowing them to rank.
+
+    Only products at least 10% below theoretical gold value are checked.
+    A failed page request does NOT silently delete the product; it is retained
+    with an 'unverified' status so the app never mistakes a network error for
+    evidence that an item is mixed material.
+    """
+    targets = [
+        product for product in products
+        if product.get("price_vs_gold_pct", 999) <= DETAIL_VERIFY_THRESHOLD_PCT
+    ][:DETAIL_VERIFY_MAX_PRODUCTS]
+
+    if not targets:
+        return products
+
+    print()
+    print("=" * 72)
+    print("                 DETAIL-PAGE VERIFICATION")
+    print("=" * 72)
+    print(
+        f"Checking {len(targets)} suspicious bargains "
+        f"({DETAIL_VERIFY_THRESHOLD_PCT:.0f}% or lower vs gold)..."
+    )
+
+    rejected_codes = set()
+
+    def check(product):
+        try:
+            text = fetch_product_detail_text(product)
+            if not text.strip():
+                return product, "unverified", []
+            flags = find_detail_reject_terms(text)
+            if flags:
+                return product, "rejected_mixed_material", flags
+            return product, "detail_checked", []
+        except Exception as error:
+            return product, "unverified", [type(error).__name__]
+
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        futures = [executor.submit(check, product) for product in targets]
+        completed = 0
+        for future in as_completed(futures):
+            product, status, flags = future.result()
+            completed += 1
+            product["verification_status"] = status
+            product["detail_flags"] = ", ".join(flags)
+            if status == "rejected_mixed_material":
+                rejected_codes.add(product["code"])
+                print(
+                    f"[{completed}/{len(targets)}] REJECT "
+                    f"{product['title']} | {', '.join(flags)}"
+                )
+            else:
+                print(
+                    f"[{completed}/{len(targets)}] {status.upper()} | "
+                    f"{product['title']}"
+                )
+
+    for product in products:
+        product.setdefault("verification_status", "title_only")
+        product.setdefault("detail_flags", "")
+
+    cleaned = [p for p in products if p["code"] not in rejected_codes]
+    cleaned.sort(key=lambda p: p["price_vs_gold_pct"])
+
+    print("-" * 72)
+    print(f"Detail pages checked: {len(targets)}")
+    print(f"Mixed-material listings removed: {len(rejected_codes)}")
+    print(f"Listings remaining: {len(cleaned):,}")
+    print("=" * 72)
+
+    return cleaned
+
+
+# ============================================================
 # ANALYSE PRODUCTS
 # ============================================================
 
@@ -982,6 +1131,8 @@ def export_to_csv(
         "store",
         "image_url",
         "url",
+        "verification_status",
+        "detail_flags",
     ]
 
     with open(
@@ -1102,6 +1253,18 @@ def export_to_csv(
                 "url":
                     product["url"]
                     or "",
+
+                "verification_status":
+                    product.get(
+                        "verification_status",
+                        "title_only",
+                    ),
+
+                "detail_flags":
+                    product.get(
+                        "detail_flags",
+                        "",
+                    ),
             })
 
     print()
@@ -1350,6 +1513,14 @@ if __name__ == "__main__":
                 products,
                 gold_price,
             )
+        )
+
+        # ====================================================
+        # 4. VERIFY SUSPICIOUS BARGAINS FROM DETAIL PAGES
+        # ====================================================
+
+        analysed_products = verify_suspicious_products(
+            analysed_products
         )
 
         # ====================================================
