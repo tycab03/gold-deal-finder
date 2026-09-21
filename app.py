@@ -1158,7 +1158,7 @@ for position, (_, row) in enumerate(
 
                 st.metric(
                     "Total Cost",
-                    f"${row['total_price']:,.2f}",
+                    f"${row['total_price']:,.0f}",
                 )
 
 
@@ -1166,7 +1166,7 @@ for position, (_, row) in enumerate(
 
                 st.metric(
                     "Theoretical Gold",
-                    f"${row['theoretical_gold_value']:,.2f}",
+                    f"${row['theoretical_gold_value']:,.0f}",
                 )
 
 
@@ -1174,7 +1174,7 @@ for position, (_, row) in enumerate(
 
                 st.metric(
                     "Difference",
-                    f"${difference:+,.2f}",
+                    f"{'-' if difference < 0 else '+' if difference > 0 else ''}${abs(difference):,.0f}",
                 )
 
 
