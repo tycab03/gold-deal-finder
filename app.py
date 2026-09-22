@@ -6,6 +6,7 @@ import pandas as pd
 import streamlit as st
 
 from gold_price import get_gold_price_per_gram
+from deal_scoring import calculate_deal_metrics, DEFAULT_RECOVERY_RATE
 
 
 # ============================================================
@@ -312,6 +313,32 @@ def get_verification_badge(row):
     return "⚪ Title only"
 
 
+def add_deal_metrics(dataframe, recovery_rate):
+    """Recalculate profit and scores for the selected payout assumption."""
+    if dataframe.empty:
+        for column in (
+            "recovery_rate", "estimated_resale_value", "estimated_profit",
+            "profit_margin_pct", "deal_score",
+        ):
+            dataframe[column] = pd.Series(dtype="float64")
+        return dataframe
+
+    def metrics_for_row(row):
+        return pd.Series(calculate_deal_metrics(
+            row.get("theoretical_gold_value", 0),
+            row.get("total_price", 0),
+            recovery_rate=recovery_rate,
+            image_status=row.get("image_verification_status", ""),
+            text_status=row.get("verification_status", ""),
+        ))
+
+    dataframe = dataframe.copy()
+    metrics = dataframe.apply(metrics_for_row, axis=1)
+    for column in metrics.columns:
+        dataframe[column] = metrics[column]
+    return dataframe
+
+
 # ============================================================
 # HEADER
 # ============================================================
@@ -577,6 +604,39 @@ with st.sidebar:
         value=False,
     )
 
+    st.divider()
+    st.subheader("Profit assumptions")
+
+    recovery_percent = st.slider(
+        "Expected melt payout",
+        min_value=50,
+        max_value=100,
+        value=int(DEFAULT_RECOVERY_RATE * 100),
+        step=1,
+        help=(
+            "Percentage of theoretical contained-gold value you expect to "
+            "recover after buyer or refiner deductions."
+        ),
+    )
+
+    minimum_profit = st.number_input(
+        "Minimum estimated profit ($)",
+        min_value=0,
+        value=0,
+        step=25,
+    )
+
+    minimum_deal_score = st.slider(
+        "Minimum Deal Score",
+        min_value=0,
+        max_value=100,
+        value=0,
+        step=5,
+    )
+
+
+df = add_deal_metrics(df, recovery_percent / 100)
+
 
 # ============================================================
 # TOP METRICS
@@ -673,6 +733,8 @@ with sort_col:
             "Sort",
             [
                 "Best value",
+                "Highest Deal Score",
+                "Highest estimated profit",
                 "Lowest price",
                 "Highest weight",
                 "Highest gold value",
@@ -826,6 +888,16 @@ if images_only:
 
 
 # ------------------------------------------------------------
+# PROFIT / DEAL SCORE
+# ------------------------------------------------------------
+
+filtered_df = filtered_df[
+    (filtered_df["estimated_profit"] >= minimum_profit)
+    & (filtered_df["deal_score"] >= minimum_deal_score)
+]
+
+
+# ------------------------------------------------------------
 # SEARCH
 # ------------------------------------------------------------
 
@@ -850,7 +922,23 @@ if search:
 # SORT
 # ============================================================
 
-if sort_option == "Best value":
+if sort_option == "Highest Deal Score":
+
+    filtered_df = filtered_df.sort_values(
+        ["deal_score", "estimated_profit"],
+        ascending=[False, False],
+    )
+
+
+elif sort_option == "Highest estimated profit":
+
+    filtered_df = filtered_df.sort_values(
+        "estimated_profit",
+        ascending=False,
+    )
+
+
+elif sort_option == "Best value":
 
     filtered_df = (
         filtered_df.sort_values(
@@ -1019,6 +1107,9 @@ for position, (_, row) in enumerate(
         ]
     )
 
+    estimated_profit = float(row["estimated_profit"])
+    deal_score = float(row["deal_score"])
+
     # --------------------------------------------------------
     # COMPARISON TEXT
     # --------------------------------------------------------
@@ -1174,6 +1265,12 @@ for position, (_, row) in enumerate(
 
             with percentage_col:
 
+                st.caption("DEAL SCORE")
+
+                st.markdown(
+                    f"### {deal_score:.0f}/100"
+                )
+
                 st.caption(
                     "PRICE VS GOLD"
                 )
@@ -1188,8 +1285,8 @@ for position, (_, row) in enumerate(
 
             (
                 cost_col,
-                gold_col,
-                diff_col,
+                resale_col,
+                profit_col,
                 weight_col,
                 carat_col,
             ) = st.columns(5)
@@ -1201,18 +1298,18 @@ for position, (_, row) in enumerate(
                     f"${row['total_price']:,.0f}",
                 )
 
-            with gold_col:
+            with resale_col:
 
                 st.metric(
-                    "Theoretical Gold",
-                    f"${row['theoretical_gold_value']:,.0f}",
+                    "Est. Resale",
+                    f"${row['estimated_resale_value']:,.0f}",
                 )
 
-            with diff_col:
+            with profit_col:
 
                 st.metric(
-                    "Difference",
-                    f"{'-' if difference < 0 else '+' if difference > 0 else ''}${abs(difference):,.0f}",
+                    "Est. Profit",
+                    f"{'-' if estimated_profit < 0 else '+' if estimated_profit > 0 else ''}${abs(estimated_profit):,.0f}",
                 )
 
             with weight_col:
@@ -1244,6 +1341,12 @@ for position, (_, row) in enumerate(
             st.caption(
                 f"Pure gold equivalent: "
                 f"{row['pure_gold_equivalent']:.2f}g"
+                f"  •  "
+                f"Theoretical gold: "
+                f"${row['theoretical_gold_value']:,.2f}"
+                f"  •  "
+                f"Profit margin: "
+                f"{row['profit_margin_pct']:+.1f}%"
                 f"  •  "
                 f"Listing: "
                 f"${row['price']:,.2f}"
@@ -1290,5 +1393,6 @@ st.caption(
     "cached gold spot price. Actual recoverable gold value "
     "may differ because of stones, non-gold components, "
     "solder, clasps, assay results, refining costs and "
-    "other deductions."
+    "other deductions. Estimated resale and profit use your selected "
+    "melt-payout assumption and are not guaranteed."
 )
