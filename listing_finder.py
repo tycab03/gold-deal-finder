@@ -10,7 +10,6 @@ from io import BytesIO
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from gold_price import get_gold_price_per_gram
-from deal_scoring import calculate_deal_metrics, DEFAULT_RECOVERY_RATE
 
 
 # ============================================================
@@ -1377,14 +1376,6 @@ def analyse_products(
             "price_vs_gold_pct"
         ] = price_vs_gold_pct
 
-        product.update(calculate_deal_metrics(
-            theoretical_gold_value,
-            total_price,
-            recovery_rate=DEFAULT_RECOVERY_RATE,
-            image_status=product.get("image_verification_status", ""),
-            text_status=product.get("verification_status", ""),
-        ))
-
         analysed_products.append(
             product
         )
@@ -1431,11 +1422,6 @@ def export_to_csv(
         "theoretical_gold_value",
         "difference",
         "price_vs_gold_pct",
-        "recovery_rate",
-        "estimated_resale_value",
-        "estimated_profit",
-        "profit_margin_pct",
-        "deal_score",
         "category",
         "store",
         "image_url",
@@ -1465,16 +1451,6 @@ def export_to_csv(
             products,
             start=1,
         ):
-
-            # Verification happens after the initial value analysis, so refresh
-            # the score here using the final text/image confidence statuses.
-            product.update(calculate_deal_metrics(
-                product["theoretical_gold_value"],
-                product["total_price"],
-                recovery_rate=DEFAULT_RECOVERY_RATE,
-                image_status=product.get("image_verification_status", ""),
-                text_status=product.get("verification_status", ""),
-            ))
 
             writer.writerow({
 
@@ -1557,18 +1533,6 @@ def export_to_csv(
                         ],
                         2,
                     ),
-
-                "recovery_rate": round(product["recovery_rate"], 4),
-
-                "estimated_resale_value": round(
-                    product["estimated_resale_value"], 2
-                ),
-
-                "estimated_profit": round(product["estimated_profit"], 2),
-
-                "profit_margin_pct": round(product["profit_margin_pct"], 2),
-
-                "deal_score": round(product["deal_score"], 1),
 
                 "category":
                     product["category"]
