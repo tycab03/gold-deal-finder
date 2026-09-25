@@ -446,37 +446,15 @@ with st.sidebar:
         if carat in carats_in_data
     ]
 
-    # Use an explicit key so we can clean stale selections left over from
-    # an older 9ct-only Streamlit session.
-    if "gold_carat_filter" in st.session_state:
-        current_selection = st.session_state["gold_carat_filter"]
-
-        if not isinstance(current_selection, list):
-            current_selection = list(current_selection)
-
-        cleaned_selection = [
-            int(carat)
-            for carat in current_selection
-            if int(carat) in available_carats
-        ]
-
-        # If the old session only knew about 9ct, reset to all available
-        # carats when the catalogue now contains additional carats.
-        if (
-            cleaned_selection == [9]
-            and len(available_carats) > 1
-        ):
-            del st.session_state["gold_carat_filter"]
-
-        else:
-            st.session_state["gold_carat_filter"] = cleaned_selection
-
+    # Keep the widget simple: the user's current selection is the source of truth.
+    # The previous session-state cleanup could overwrite a deliberate 9ct-only
+    # selection on the next Streamlit rerun.
     selected_carats = st.multiselect(
         "Gold carat",
         options=available_carats,
         default=available_carats,
         format_func=lambda x: f"{x}ct",
-        key="gold_carat_filter",
+        key="gold_carat_filter_v2",
     )
 
     # --------------------------------------------------------
@@ -693,20 +671,15 @@ filtered_df = df.copy()
 # CARAT
 # ------------------------------------------------------------
 
-if selected_carats:
+selected_carats = [int(carat) for carat in selected_carats]
 
-    filtered_df = (
-        filtered_df[
-            filtered_df[
-                "carat"
-            ].isin(
-                selected_carats
-            )
-        ]
-    )
+if selected_carats:
+    filtered_df = filtered_df[
+        filtered_df["carat"].isin(selected_carats)
+    ].copy()
 else:
     # No carats selected means no listings should be shown.
-    filtered_df = filtered_df.iloc[0:0]
+    filtered_df = filtered_df.iloc[0:0].copy()
 
 
 # ------------------------------------------------------------
