@@ -487,7 +487,7 @@ with st.sidebar:
         "% vs gold value range",
         min_value=-100,
         max_value=200,
-        value=(-50, 25),
+        value=(-100, 200),
         step=5,
     )
 
@@ -704,6 +704,9 @@ if selected_carats:
             )
         ]
     )
+else:
+    # No carats selected means no listings should be shown.
+    filtered_df = filtered_df.iloc[0:0]
 
 
 # ------------------------------------------------------------
