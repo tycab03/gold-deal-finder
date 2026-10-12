@@ -251,6 +251,22 @@ def is_solid_gold_candidate(title):
         "cameos",
     ]
 
+    # Stone-set rings are allowed; retain exclusions for plated/filled metals.
+    is_ring = bool(re.search(r"\brings?\b", title_lower))
+    if is_ring:
+        stone_terms = [
+            "paste", "jade", "jadeite", "mother of pearl", "mother-of-pearl",
+            "stone", "stones", "srone", "gem", "gemstone", "crystal",
+            "crystals", "moissanite", "moissanites", "jet", "glass",
+            "coral", "plastic", "resin", "enamel", "shell", "pearl",
+            "pearls", "diamond", "diamonds", "sapphire", "sapphires",
+            "ruby", "rubies", "emerald", "emeralds", "topaz", "amethyst",
+            "garnet", "agate", "quartz", "turquoise", "cubic zirconia",
+            "zirconia", "zircon", "opal", "opals", "andamooka",
+            "cameo", "cameos",
+        ]
+        excluded_phrases = [x for x in excluded_phrases if x not in stone_terms]
+
     for phrase in excluded_phrases:
 
         if phrase in title_lower:
@@ -272,6 +288,12 @@ def is_solid_gold_candidate(title):
         r"\bDIAS\b",
         r"\bMOP\b",
     ]
+
+    if is_ring:
+        excluded_patterns = [p for p in excluded_patterns if p not in (
+            r"\bCZ\b", r"\bTDW\b", r"\bCTW\b",
+            r"\bDIA\b", r"\bDIAS\b", r"\bMOP\b",
+        )]
 
     for pattern in excluded_patterns:
 
@@ -937,6 +959,15 @@ def verify_suspicious_products(products):
             if not text.strip():
                 return product, "unverified", []
             flags = find_detail_reject_terms(text)
+            if re.search(r"\brings?\b", product.get("title", ""), re.I):
+                stone_flags = [
+                    "pearl", "pearls", "diamond", "diamonds", "stone", "stones",
+                    "gemstone", "gemstones", "cubic zirconia", "zirconia", "opal",
+                    "sapphire", "ruby", "emerald", "jade", "jadeite", "coral",
+                    "glass", "crystal", "resin", "plastic", "enamel", "shell",
+                    "mother of pearl", "mother-of-pearl", "paste set",
+                ]
+                flags = [f for f in flags if f not in stone_flags]
             if flags:
                 return product, "rejected_mixed_material", flags
             return product, "text_checked", []
@@ -1204,6 +1235,13 @@ def verify_product_images(products):
             product["image_label"] = label
             product["image_confidence"] = round(confidence, 4)
             checked += 1
+
+            # CLIP may classify stone-set rings as mixed material.
+            # Do not reject these based solely on the image classification.
+            if (status == "rejected_image_mixed_material"
+                    and re.search(r"\brings?\b", product.get("title", ""), re.I)):
+                status = "image_uncertain"
+                product["image_verification_status"] = status
 
             if status == "rejected_image_mixed_material":
                 rejected_codes.add(product["code"])
